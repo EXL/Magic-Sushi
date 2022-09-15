@@ -1269,6 +1269,377 @@ static void mmi_gx_magicsushi_cyclic_timer(void) {
 	}
 }
 
+void mmi_gx_magicsushi_key_5_release(void) {
+    /*----------------------------------------------------------------*/
+    /* Local Variables                                                */
+    /*----------------------------------------------------------------*/
+    S32 coord_x = 0, coord_y = 0;
+
+    /*----------------------------------------------------------------*/
+    /* Code Body                                                      */
+    /*----------------------------------------------------------------*/
+    if (!g_gx_magicsushi_context.moving)
+    {
+        coord_x = g_gx_magicsushi_context.cursor_x;
+        coord_y = g_gx_magicsushi_context.cursor_y;
+        if (g_gx_magicsushi_context.click_mode == 0)
+        {
+        #ifdef __MMI_GAME_MULTICHANNEL_SOUND__
+            GFX_STOP_SOUND_EFFECTS_MIDI(g_gx_magicsushi_context.move_midi);
+            GFX_STOP_SOUND_EFFECTS_MIDI(g_gx_magicsushi_context.select_midi);
+
+            GFX_PLAY_SOUND_EFFECTS_MIDI(g_gx_magicsushi_context.select_midi);
+        #else /* __MMI_GAME_MULTICHANNEL_SOUND__ */
+//            GFX_PLAY_AUDIO_MIDI(MAGICSUSHISelect, MAGICSUSHISELECT, DEVICE_AUDIO_PLAY_ONCE);
+        #endif /* __MMI_GAME_MULTICHANNEL_SOUND__ */
+
+            g_gx_magicsushi_context.old_x = coord_x;
+            g_gx_magicsushi_context.old_y = coord_y;
+            g_gx_magicsushi_context.click_mode = 1;
+
+            switch (g_gx_magicsushi_context.map[coord_x][coord_y])
+            {
+                case 8:
+                    g_gx_magicsushi_context.map[coord_x][coord_y] = rand() % g_gx_magicsushi_context.type_num;
+                    g_gx_magicsushi_context.animation_mode = 2;
+                    g_gx_magicsushi_context.animation_step = MMI_GX_MAGICSUSHI_ANIMATION_STEP;
+                    g_gx_magicsushi_context.moving = 1;
+                    g_gx_magicsushi_context.special = 0;
+                    break;
+                case 9:
+                    g_gx_magicsushi_context.moving = 1;
+                    g_gx_magicsushi_context.animation_mode = 3;
+                    g_gx_magicsushi_context.animation_step = MMI_GX_MAGICSUSHI_ANIMATION_STEP;
+                    g_gx_magicsushi_context.special = 0;
+                    break;
+                case 10:
+                    g_gx_magicsushi_context.moving = 1;
+                    g_gx_magicsushi_context.animation_mode = 4;
+                    g_gx_magicsushi_context.animation_step = MMI_GX_MAGICSUSHI_ANIMATION_STEP;
+                    g_gx_magicsushi_context.special = 0;
+                    break;
+                default:
+                    g_gx_magicsushi_context.selected = 1;
+                    break;
+            }
+
+        }
+        else if (g_gx_magicsushi_context.click_mode == 1)
+        {
+            g_gx_magicsushi_context.click_mode = 1;
+            if (abs(g_gx_magicsushi_context.old_x - coord_x) + abs(g_gx_magicsushi_context.old_y - coord_y) == 1)
+            {
+
+                g_gx_magicsushi_context.moving = 1;
+                g_gx_magicsushi_context.check = 1;
+                g_gx_magicsushi_context.animation_step = MMI_GX_MAGICSUSHI_ANIMATION_STEP;
+                g_gx_magicsushi_context.selected = 0;
+
+                /* up-down switch */
+                if (abs(g_gx_magicsushi_context.old_x - coord_x) == 0)
+                {
+                    g_gx_magicsushi_context.animation_mode = 5;
+                    if (g_gx_magicsushi_context.old_y > coord_y)
+                    {
+                        g_gx_magicsushi_context.special_y = coord_y;
+                        g_gx_magicsushi_context.special_x = coord_x;
+                    }
+                    else
+                    {
+                        g_gx_magicsushi_context.special_x = g_gx_magicsushi_context.old_x;
+                        g_gx_magicsushi_context.special_y = g_gx_magicsushi_context.old_y;
+                        g_gx_magicsushi_context.old_x = coord_x;
+                        g_gx_magicsushi_context.old_y = coord_y;
+                    }
+                }
+                /* left-right switch */
+                else
+                {
+                    g_gx_magicsushi_context.animation_mode = 7;
+                    if (g_gx_magicsushi_context.old_x > coord_x)
+                    {
+                        g_gx_magicsushi_context.special_y = coord_y;
+                        g_gx_magicsushi_context.special_x = coord_x;
+                    }
+                    else
+                    {
+                        g_gx_magicsushi_context.special_x = g_gx_magicsushi_context.old_x;
+                        g_gx_magicsushi_context.special_y = g_gx_magicsushi_context.old_y;
+                        g_gx_magicsushi_context.old_x = coord_x;
+                        g_gx_magicsushi_context.old_y = coord_y;
+                    }
+                }
+            }
+            else if (abs(g_gx_magicsushi_context.old_x - coord_x) + abs(g_gx_magicsushi_context.old_y - coord_y) == 0)
+            {
+                g_gx_magicsushi_context.selected = 0;
+                g_gx_magicsushi_context.click_mode = 0;
+                g_gx_magicsushi_context.moving = 0;
+            }
+            else
+            {
+                if (g_gx_magicsushi_context.cursor_y != g_gx_magicsushi_context.old_y ||
+                    g_gx_magicsushi_context.cursor_x != g_gx_magicsushi_context.old_x)
+                {
+                    //should remove the selected and cursor item;
+                    S16 x, y;
+
+//                    gdi_layer_set_active(g_gx_magicsushi_context.foreground);
+//                    gdi_layer_push_clip();
+//                    gdi_layer_set_clip(
+//                        MMI_GX_MAGICSUSHI_ORIGIN_X,
+//                        MMI_GX_MAGICSUSHI_ORIGIN_Y,
+//                        MMI_GX_MAGICSUSHI_LCD_WIDTH - 1,
+//                        MMI_GX_MAGICSUSHI_LCD_HEIGHT - 1);
+
+                    y = (7 - g_gx_magicsushi_context.cursor_y) * MMI_GX_MAGICSUSHI_SIZE + MMI_GX_MAGICSUSHI_TOP_WIDTH;
+                    x = g_gx_magicsushi_context.cursor_x * MMI_GX_MAGICSUSHI_SIZE + MMI_GX_MAGICSUSHI_LEFT_WIDTH;
+
+//                    gdi_draw_solid_rect(x, y, x + MMI_GX_MAGICSUSHI_SIZE - 1, y + MMI_GX_MAGICSUSHI_SIZE - 1, GDI_COLOR_TRANSPARENT);
+                    gdi_image_draw_id(x, y, (U16) (IMG_ID_GX_MAGICSUSHI_TYPE_0 + g_gx_magicsushi_context.map[g_gx_magicsushi_context.cursor_x][g_gx_magicsushi_context.cursor_y]));
+
+                    y = (7 - g_gx_magicsushi_context.old_y) * MMI_GX_MAGICSUSHI_SIZE + MMI_GX_MAGICSUSHI_TOP_WIDTH;
+                    x = g_gx_magicsushi_context.old_x * MMI_GX_MAGICSUSHI_SIZE + MMI_GX_MAGICSUSHI_LEFT_WIDTH;
+
+//                    gdi_draw_solid_rect(x, y, x + MMI_GX_MAGICSUSHI_SIZE - 1, y + MMI_GX_MAGICSUSHI_SIZE - 1, GDI_COLOR_TRANSPARENT);
+                    gdi_image_draw_id(x, y, (U16) (IMG_ID_GX_MAGICSUSHI_TYPE_0 + g_gx_magicsushi_context.map[g_gx_magicsushi_context.old_x][g_gx_magicsushi_context.old_y]));
+
+//                    gdi_layer_pop_clip();
+//                    gdi_layer_set_active(g_gx_magicsushi_context.background);
+                }
+
+                /* click others */
+            #ifdef __MMI_GAME_MULTICHANNEL_SOUND__
+                GFX_STOP_SOUND_EFFECTS_MIDI(g_gx_magicsushi_context.move_midi);
+                GFX_STOP_SOUND_EFFECTS_MIDI(g_gx_magicsushi_context.select_midi);
+
+                GFX_PLAY_SOUND_EFFECTS_MIDI(g_gx_magicsushi_context.select_midi);
+            #else /* __MMI_GAME_MULTICHANNEL_SOUND__ */
+//                GFX_PLAY_AUDIO_MIDI(MAGICSUSHISelect, MAGICSUSHISELECT, DEVICE_AUDIO_PLAY_ONCE);
+            #endif /* __MMI_GAME_MULTICHANNEL_SOUND__ */
+
+                g_gx_magicsushi_context.old_x = coord_x;
+                g_gx_magicsushi_context.old_y = coord_y;
+                g_gx_magicsushi_context.last_key = 1;
+
+                g_gx_magicsushi_context.special_x = g_gx_magicsushi_context.cursor_x;
+                g_gx_magicsushi_context.special_y = g_gx_magicsushi_context.cursor_y;
+
+                g_gx_magicsushi_context.cursor_x = coord_x;
+                g_gx_magicsushi_context.cursor_y = coord_y;
+                g_gx_magicsushi_context.click_mode = 1;
+
+                switch (g_gx_magicsushi_context.map[coord_x][coord_y])
+                {
+                case 8:
+                    g_gx_magicsushi_context.map[coord_x][coord_y] = rand() % g_gx_magicsushi_context.type_num;
+                    g_gx_magicsushi_context.animation_mode = 2;
+                    g_gx_magicsushi_context.animation_step = MMI_GX_MAGICSUSHI_ANIMATION_STEP;
+                    g_gx_magicsushi_context.moving = 1;
+                    g_gx_magicsushi_context.special = 0;
+                    break;
+                case 9:
+                    g_gx_magicsushi_context.moving = 1;
+                    g_gx_magicsushi_context.animation_mode = 3;
+                    g_gx_magicsushi_context.animation_step = MMI_GX_MAGICSUSHI_ANIMATION_STEP;
+                    g_gx_magicsushi_context.special = 0;
+                    break;
+                case 10:
+                    g_gx_magicsushi_context.moving = 1;
+                    g_gx_magicsushi_context.animation_mode = 4;
+                    g_gx_magicsushi_context.animation_step = MMI_GX_MAGICSUSHI_ANIMATION_STEP;
+                    g_gx_magicsushi_context.special = 0;
+                    break;
+                default:
+                    g_gx_magicsushi_context.selected = 1;
+                    break;
+                }
+            }
+        }
+    }
+}
+
+
+/*****************************************************************************
+ * FUNCTION
+ *  mmi_gx_magicsushi_key_2_release
+ * DESCRIPTION
+ *  key 2 handling
+ * PARAMETERS
+ *  void
+ * RETURNS
+ *  void
+ *****************************************************************************/
+void mmi_gx_magicsushi_key_2_release(void)
+{
+    /*----------------------------------------------------------------*/
+    /* Local Variables                                                */
+    /*----------------------------------------------------------------*/
+
+    /*----------------------------------------------------------------*/
+    /* Code Body                                                      */
+    /*----------------------------------------------------------------*/
+    if (g_gx_magicsushi_context.moving)
+    {
+        return;
+    }
+    if (g_gx_magicsushi_context.cursor_y < 7)
+    {
+        if (g_gx_magicsushi_context.is_frame_need_updated) /*the previous frame do not updated yet, so give up this move*/
+        {
+            return;
+        }
+        g_gx_magicsushi_context.is_frame_need_updated = MMI_TRUE;
+        g_gx_magicsushi_context.cursor_y++;
+        g_gx_magicsushi_context.last_key = 2;
+
+        mmi_gx_magicsushi_cyclic_timer();
+//        gui_cancel_timer(mmi_gx_magicsushi_cyclic_timer);
+//        gui_start_timer(g_gx_magicsushi_context.timer_elapse, mmi_gx_magicsushi_cyclic_timer);
+    }
+}
+
+
+/*****************************************************************************
+ * FUNCTION
+ *  mmi_gx_magicsushi_key_4_release
+ * DESCRIPTION
+ *  key 2 handling
+ * PARAMETERS
+ *  void
+ * RETURNS
+ *  void
+ *****************************************************************************/
+void mmi_gx_magicsushi_key_4_release(void)
+{
+    /*----------------------------------------------------------------*/
+    /* Local Variables                                                */
+    /*----------------------------------------------------------------*/
+
+    /*----------------------------------------------------------------*/
+    /* Code Body                                                      */
+    /*----------------------------------------------------------------*/
+    if (g_gx_magicsushi_context.moving)
+    {
+        return;
+    }
+    if (g_gx_magicsushi_context.cursor_x > 0)
+    {
+        if (g_gx_magicsushi_context.is_frame_need_updated) /*the previous frame do not updated yet, so give up this move*/
+        {
+            return;
+        }
+        g_gx_magicsushi_context.is_frame_need_updated = MMI_TRUE;
+        g_gx_magicsushi_context.cursor_x--;
+        g_gx_magicsushi_context.last_key = 4;
+
+        mmi_gx_magicsushi_cyclic_timer();
+//        gui_cancel_timer(mmi_gx_magicsushi_cyclic_timer);
+//        gui_start_timer(g_gx_magicsushi_context.timer_elapse, mmi_gx_magicsushi_cyclic_timer);
+    }
+}
+
+
+/*****************************************************************************
+ * FUNCTION
+ *  mmi_gx_magicsushi_key_6_down
+ * DESCRIPTION
+ *  key right arrow handling
+ * PARAMETERS
+ *  void
+ * RETURNS
+ *  void
+ *****************************************************************************/
+void mmi_gx_magicsushi_key_6_down(void)
+{
+    g_gx_magicsushi_context.is_right_arrow_pressed = MMI_TRUE;
+}
+
+
+/*****************************************************************************
+ * FUNCTION
+ *  mmi_gx_magicsushi_key_6_release
+ * DESCRIPTION
+ *  key 2 handling
+ * PARAMETERS
+ *  void
+ * RETURNS
+ *  void
+ *****************************************************************************/
+void mmi_gx_magicsushi_key_6_release(void)
+{
+    /*----------------------------------------------------------------*/
+    /* Local Variables                                                */
+    /*----------------------------------------------------------------*/
+
+    /*----------------------------------------------------------------*/
+    /* Code Body                                                      */
+    /*----------------------------------------------------------------*/
+    if (!g_gx_magicsushi_context.is_right_arrow_pressed)
+    {
+        return;
+    }
+    g_gx_magicsushi_context.is_right_arrow_pressed = MMI_FALSE;
+    if (g_gx_magicsushi_context.moving)
+    {
+        return;
+    }
+    if (g_gx_magicsushi_context.cursor_x < 7)
+    {
+        if (g_gx_magicsushi_context.is_frame_need_updated) /*the previous frame do not updated yet, so give up this move*/
+        {
+            return;
+        }
+        g_gx_magicsushi_context.is_frame_need_updated = MMI_TRUE;
+        g_gx_magicsushi_context.cursor_x++;
+        g_gx_magicsushi_context.last_key = 6;
+
+        mmi_gx_magicsushi_cyclic_timer();
+//        gui_cancel_timer(mmi_gx_magicsushi_cyclic_timer);
+//        gui_start_timer(g_gx_magicsushi_context.timer_elapse, mmi_gx_magicsushi_cyclic_timer);
+    }
+}
+
+
+/*****************************************************************************
+ * FUNCTION
+ *  mmi_gx_magicsushi_key_8_release
+ * DESCRIPTION
+ *  key 2 handling
+ * PARAMETERS
+ *  void
+ * RETURNS
+ *  void
+ *****************************************************************************/
+void mmi_gx_magicsushi_key_8_release(void)
+{
+    /*----------------------------------------------------------------*/
+    /* Local Variables                                                */
+    /*----------------------------------------------------------------*/
+
+    /*----------------------------------------------------------------*/
+    /* Code Body                                                      */
+    /*----------------------------------------------------------------*/
+    if (g_gx_magicsushi_context.moving)
+    {
+        return;
+    }
+    if (g_gx_magicsushi_context.cursor_y > 0)
+    {
+        if (g_gx_magicsushi_context.is_frame_need_updated) /*the previous frame do not updated yet, so give up this move*/
+        {
+            return;
+        }
+        g_gx_magicsushi_context.is_frame_need_updated = MMI_TRUE;
+        g_gx_magicsushi_context.cursor_y--;
+        g_gx_magicsushi_context.last_key = 8;
+
+        mmi_gx_magicsushi_cyclic_timer();
+//        gui_cancel_timer(mmi_gx_magicsushi_cyclic_timer);
+//        gui_start_timer(g_gx_magicsushi_context.timer_elapse, mmi_gx_magicsushi_cyclic_timer);
+    }
+}
+
 static void mmi_gx_magicsushi_enter_game(void) {
 	Set_Active_Surface(screen);
 
@@ -1380,8 +1751,41 @@ int main(int argc, char *argv[]) {
 				app_exec_flag = SDL_TRUE;
 				break;
 			case SDL_KEYDOWN:
+				switch (event.key.keysym.sym) {
+				case SDLK_KP5:
+				case SDLK_RETURN:
+				case SDLK_SPACE:
+					mmi_gx_magicsushi_key_5_release();
+					break;
+				case SDLK_RIGHT:
+				case SDLK_KP6:
+					mmi_gx_magicsushi_key_6_down();
+					break;
+				default:
+					break;
+				}
 				break;
 			case SDL_KEYUP:
+				switch (event.key.keysym.sym) {
+				case SDLK_UP:
+				case SDLK_KP2:
+					mmi_gx_magicsushi_key_2_release();
+					break;
+				case SDLK_LEFT:
+				case SDLK_KP4:
+					mmi_gx_magicsushi_key_4_release();
+					break;
+				case SDLK_RIGHT:
+				case SDLK_KP6:
+					mmi_gx_magicsushi_key_6_release();
+					break;
+				case SDLK_DOWN:
+				case SDLK_KP8:
+					mmi_gx_magicsushi_key_8_release();
+					break;
+				default:
+					break;
+				}
 				break;
 			default:
 				break;
