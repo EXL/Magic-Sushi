@@ -26,53 +26,7 @@
  *
  ****************************************************************************/
 
-#include "mmi_features.h"
-#include "GameResDef.h"
-
-#ifdef __MMI_GAME_MAGICSUSHI__
-#include "mmi_rp_app_games_def.h"
-
-#ifdef __MMI_TOUCH_SCREEN__
-#include "wgui_touch_screen.h"
-#endif 
-
-#ifdef __MMI_GAME_MULTI_LANGUAGE_SUPPORT__
-#include "GameProts.h"
-#endif
-
-#include "mdi_datatype.h"
-#include "mdi_audio.h"
-#include "MMIDataType.h"
-#include "gdi_datatype.h"
-#include "kal_general_types.h"
-#include "mmi_frm_input_gprot.h"
-#include "GameFramework.h"
-#include "GlobalResDef.h"
-#include "custom_mmi_default_value.h"
-#include "gdi_include.h"
-#include "gdi_const.h"
-#include "CustDataRes.h"
-#include "ProfilesSrvGprot.h"
-#include "device.h"
-#include "mmi_frm_history_gprot.h"
-#include "stdlib.h"
-#include "GlobalConstants.h"
-#include "gui.h"
-
-
-/***************************************************************************** 
-* game multi language support
-*****************************************************************************/
-#ifdef __MMI_GAME_MULTI_LANGUAGE_SUPPORT__
-typedef enum
-{
-    MMI_MAGICSUSHI_STRING_BACKGROUND = 0,
-    MMI_MAGICSUSHI_STRING_GAMEOVER,
-    MMI_MAGICSUSHI_STRING_UPLEVEL, 
-    MMI_MAGICSUSHI_STRING_NOMOREMOVE,
-    MMI_MAGICSUSHI_STRING_TOTAL
-}mmi_magicsushi_string_enum;
-#endif
+#include "Magic-Sushi-Head.h"
 
 /***************************************************************************** 
 * Define
@@ -3172,7 +3126,3 @@ void mmi_gx_magicsushi_rsk_release(void)
     mmi_gx_magicsushi_render();
     GoBackHistory();
 }
-
-
-#endif  //__MMI_GAME_MAGICSUSHI__
-
