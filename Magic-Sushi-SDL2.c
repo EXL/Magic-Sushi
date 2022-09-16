@@ -32,11 +32,12 @@
 
 static Mix_Music *music_tracks[MUSIC_MAX] = { NULL };
 static SDL_bool is_music_playing = SDL_FALSE;
-static Sint32 volume_old = -1;
+static Sint32 volume_music_old = -1;
 static MUSIC_TRACK music_latest = 0;
 
 static Mix_Chunk *sound_effects[SOUND_MAX] = { NULL };
 static SDL_bool is_channel_playing = SDL_FALSE;
+static Sint32 volume_channel_old = -1;
 
 static SDL_Texture *textures[TEXTURE_MAX] = { NULL };
 
@@ -63,9 +64,9 @@ static void Sound_Play(SOUND_EFFECT track, Sint32 loop) {
 	is_channel_playing = SDL_TRUE;
 	is_music_playing = SDL_FALSE;
 	Mix_HaltMusic();
-	if (Mix_Playing(-1))
-		Mix_HaltChannel(-1);
-	Mix_PlayChannel(-1, sound_effects[track], loop);
+	if (Mix_Playing(MIX_SFX_CHANNEL))
+		Mix_HaltChannel(MIX_SFX_CHANNEL);
+	Mix_PlayChannel(MIX_SFX_CHANNEL, sound_effects[track], loop);
 }
 
 static void Music_Sound_Unload(void) {
@@ -175,6 +176,18 @@ static void key_handler(S32 key, EVENT keydown) {
 				case SDLK_KP_6:
 					mmi_gx_magicsushi_key_6_down();
 					break;
+				case SDLK_m:
+				case SDLK_KP_7:
+					if (volume_music_old == -1 && volume_channel_old == -1) {
+						volume_music_old = Mix_VolumeMusic(0);
+						volume_channel_old = Mix_Volume(MIX_SFX_CHANNEL, 0);
+					} else {
+						Mix_VolumeMusic(volume_music_old);
+						Mix_Volume(MIX_SFX_CHANNEL, volume_channel_old);
+						volume_music_old = -1;
+						volume_channel_old = -1;
+					}
+					break;
 			}
 			break;
 		case KEY_EVENT_UP:
@@ -227,8 +240,8 @@ static void main_loop_step(SDL_Texture *texture) {
 		}
 	}
 
-	is_channel_playing = Mix_Playing(-1);
-	if (!is_channel_playing && !is_music_playing) {
+	is_channel_playing = Mix_Playing(MIX_SFX_CHANNEL);
+	if (!is_channel_playing && !is_music_playing && (music_latest == MUSIC_BACKGROUND)) {
 		is_music_playing = SDL_TRUE;
 		Mix_PlayMusic(music_tracks[music_latest], -1);
 	}
