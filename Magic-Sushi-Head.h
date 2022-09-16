@@ -18,6 +18,7 @@
 #define WINDOW_HEIGHT                                  (320)
 #define TEXTURE_WIDTH                                  (240)
 #define TEXTURE_HEIGHT                                 (320)
+#define FPS_COUNTER                                    (100) // 10 FPS.
 
 #define __align(x)
 #define gdi_handle void * // TODO: Fix that

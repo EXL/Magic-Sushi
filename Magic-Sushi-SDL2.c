@@ -296,7 +296,7 @@ int main(SDL_UNUSED int argc, SDL_UNUSED char *argv[]) {
 
 	while (!exit_main_loop) {
 		main_loop_step(textures[TEXTURE_SCREEN]);
-		SDL_Delay(100); // 10 fps.
+		SDL_Delay(FPS_COUNTER); // 10 fps.
 	}
 
 	Mix_CloseAudio();

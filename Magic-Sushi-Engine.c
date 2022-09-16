@@ -643,32 +643,32 @@ typedef struct
 *****************************************************************************/
 gx_magicsushi_context_struct g_gx_magicsushi_context = 
 {
-    FALSE,  /* is_gameover */
-    TRUE,   /* is_new_game */
-    0,      /* game_level */
-    0,      /* game_grade */
-    100,      /* timer_elapse */
-    0,      /* click_mode */
-    0,      /* selected */
-    1,      /* level */
-    0,      /* bonus */
-    0,      /* special */
-    0,      /* special x */
-    0,      /* special y */
-    0,      /* old x */
-    0,      /* old x */
-    15,     /* remainder */
-    0,      /* check */
-    50,     /* total time */
-    50,     /* remain time */
-    0,      /* tick */
-    0,      /* animation_step */
-    0,      /* animation_mode */
-    0,      /* moving */
-    0,      /* last key */
-    0,      /* cursorx */
-    0,      /* cursory */
-    0       /* SOFTKEY STATE */
+    FALSE,            /* is_gameover */
+    TRUE,             /* is_new_game */
+    0,                /* game_level */
+    0,                /* game_grade */
+    FPS_COUNTER,      /* timer_elapse */
+    0,                /* click_mode */
+    0,                /* selected */
+    1,                /* level */
+    0,                /* bonus */
+    0,                /* special */
+    0,                /* special x */
+    0,                /* special y */
+    0,                /* old x */
+    0,                /* old x */
+    15,               /* remainder */
+    0,                /* check */
+    50,               /* total time */
+    50,               /* remain time */
+    0,                /* tick */
+    0,                /* animation_step */
+    0,                /* animation_mode */
+    0,                /* moving */
+    0,                /* last key */
+    0,                /* cursorx */
+    0,                /* cursory */
+    0                 /* SOFTKEY STATE */
 };
 
 #ifdef __MMI_GAME_MULTI_LANGUAGE_SUPPORT__  /*added for game multi-language*/
