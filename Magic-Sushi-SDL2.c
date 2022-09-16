@@ -22,7 +22,6 @@
 #include <SDL2/SDL_mixer.h>
 
 #include <stdio.h>
-#include <stdlib.h>
 
 #include <time.h>
 
@@ -116,6 +115,58 @@ static void main_loop_step(SDL_Texture *texture) {
 	SDL_RenderCopy(render, texture, &rectangle, NULL);
 	SDL_RenderPresent(render);
 }
+
+/* ==================================================== STUBS ======================================================= */
+
+void GFX_PLAY_SOUND_EFFECTS_MIDI(S32 music_id) {
+	fprintf(stderr, "PLAY MUSIC %d.\n", music_id);
+}
+
+void GFX_STOP_SOUND_EFFECTS_MIDI(S32 music_id) {
+	fprintf(stderr, "STOP MUSIC %d.\n", music_id);
+}
+
+void GFX_PLAY_BACKGROUND_SOUND(S32 music_id) {
+	fprintf(stderr, "PLAY MUSIC %d.\n", music_id);
+}
+
+void GFX_STOP_BACKGROUND_SOUND(S32 music_id) {
+	fprintf(stderr, "STOP MUSIC %d.\n", music_id);
+}
+
+void mmi_gfx_draw_gameover_screen(S32 gameover_id, S32 field_id, S32 pic_id, U16 grade) {
+	fprintf(stderr, "DRAW GAMEOVER %d %d %d %hu.\n", gameover_id, field_id, pic_id, grade);
+}
+
+void gdi_layer_push_clip(void) {
+	fprintf(stderr, "ENTER: gdi_layer_push_clip.\n");
+}
+
+void gdi_layer_pop_clip(void) {
+	fprintf(stderr, "ENTER: gdi_layer_pop_clip.\n");
+}
+
+void gdi_layer_set_clip(S32 x, S32 y, S32 w, S32 h) {
+	fprintf(stderr, "ENTER: gdi_layer_set_clip %d %d %d %d.\n", x, y, w, h);
+}
+
+void gdi_layer_clear_background(U32 c) {
+	fprintf(stderr, "ENTER: gdi_layer_clear_background %u.\n", c);
+}
+
+void gdi_layer_set_active(gdi_handle layer) {
+	fprintf(stderr, "ENTER: gdi_layer_set_active.\n");
+}
+
+void gdi_image_draw_id(S32 x, S32 y, TEXTURE texture_id) {
+	fprintf(stderr, "ENTER: gdi_image_draw_id %d %d %d.\n", x, y, texture_id);
+}
+
+void gdi_draw_solid_rect(S32 x, S32 y, S32 w, S32 h, U32 c) {
+	fprintf(stderr, "ENTER: gdi_draw_solid_rect %d %d %d %d %u.\n", x, y, w, h, c);
+}
+
+/* ================================================================================================================== */
 
 int main(SDL_UNUSED int argc, SDL_UNUSED char *argv[]) {
 	srand(time(0));

@@ -1880,7 +1880,7 @@ void mmi_gx_magicsushi_draw_gameover(void)
     /*----------------------------------------------------------------*/
     /* Local Variables                                                */
     /*----------------------------------------------------------------*/
-    gdi_color bg_color = gdi_act_color_from_rgb(0,0xee, 0xdf, 0x9b);
+//    gdi_color bg_color = gdi_act_color_from_rgb(0,0xee, 0xdf, 0x9b);
 
     /*----------------------------------------------------------------*/
     /* Code Body                                                      */
