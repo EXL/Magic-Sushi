@@ -222,17 +222,14 @@ int main(SDL_UNUSED int argc, SDL_UNUSED char *argv[]) {
 		return EXIT_FAILURE;
 	}
 
-	// TODO: Window Icon!!!
-#if 0
-	SDL_Surface *icon = SDL_LoadBMP("assets/GAME_F1RACE_ICON.bmp");
+	SDL_Surface *icon = SDL_LoadBMP("Assets/gx_magicsushi_icon.bmp");
 	if (icon == NULL)
 		fprintf(stderr, "SDL_LoadBMP Error: %s.\n", SDL_GetError());
 	else {
-		SDL_SetColorKey(icon, SDL_TRUE, SDL_MapRGB(icon->format, 36, 227, 113)); // Icon transparent mask.
+		SDL_SetColorKey(icon, SDL_TRUE, SDL_MapRGB(icon->format, 128, 255, 128)); // Icon transparent mask.
 		SDL_SetWindowIcon(window, icon);
 		SDL_FreeSurface(icon);
 	}
-#endif
 
 	render = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
 	if (render == NULL) {
