@@ -134,7 +134,7 @@ static void main_loop_step(SDL_Texture *texture) {
 	}
 	SDL_SetRenderTarget(render, texture);
 
-	//TODO: F1Race_Cyclic_Timer();
+	mmi_gx_magicsushi_cyclic_timer();
 
 	SDL_SetRenderTarget(render, NULL);
 	SDL_Rect rectangle;
@@ -250,7 +250,7 @@ int main(SDL_UNUSED int argc, SDL_UNUSED char *argv[]) {
 	SDL_SetRenderTarget(render, textures[TEXTURE_SCREEN]);
 	SDL_RenderClear(render);
 
-	//TODO: First Frame!!!
+	mmi_gx_magicsushi_enter_game();
 
 	SDL_SetRenderTarget(render, NULL);
 

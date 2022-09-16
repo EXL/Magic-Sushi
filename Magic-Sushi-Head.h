@@ -149,6 +149,9 @@ extern void gdi_layer_set_active(gdi_handle layer);
 extern void gdi_image_draw_id(S32 x, S32 y, TEXTURE texture_id);
 extern void gdi_draw_solid_rect(S32 x, S32 y, S32 w, S32 h, U32 c);
 
+extern void mmi_gx_magicsushi_enter_game(void);
+extern void mmi_gx_magicsushi_cyclic_timer(void);
+
 /* ================================================================================================================== */
 
 #endif /* !MAGIC_SUSHI_TYPES_H */
