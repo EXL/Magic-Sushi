@@ -2004,13 +2004,16 @@ void mmi_gx_magicsushi_enter_game(void)
 
 #ifdef __MMI_GAME_MULTICHANNEL_SOUND__
     GFX_OPEN_BACKGROUND_SOUND(MAGICSUSHIBackground, MAGICSUSHIBACKGROUND, g_gx_magicsushi_context.background_midi);
+    g_gx_magicsushi_context.background_midi = MUSIC_BACKGROUND;
     GFX_PLAY_BACKGROUND_SOUND(g_gx_magicsushi_context.background_midi);
 
     GFX_OPEN_DUMMY_BACKGROUND_SOUND();
     GFX_PLAY_DUMMY_BACKGROUND_SOUND();
 
     GFX_OPEN_SOUND_EFFECTS_MIDI(MAGICSUSHIMove, MAGICSUSHIMOVE, 1, g_gx_magicsushi_context.move_midi);
+    g_gx_magicsushi_context.move_midi = SOUND_MOVE;
     GFX_OPEN_SOUND_EFFECTS_MIDI(MAGICSUSHISelect, MAGICSUSHISELECT, 1, g_gx_magicsushi_context.select_midi);
+    g_gx_magicsushi_context.select_midi = SOUND_SELECT;
 #endif /* __MMI_GAME_MULTICHANNEL_SOUND__ */ 
 
     /* start game loop */

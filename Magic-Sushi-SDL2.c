@@ -30,15 +30,13 @@
 
 #include <time.h>
 
-typedef enum MUSIC_TRACKS {
-	MUSIC_BACKGROUND,
-	MUSIC_BACKGROUND_LOWCOST,
-	MUSIC_CRASH,
-	MUSIC_GAMEOVER,
-	MUSIC_MAX
-} MUSIC_TRACK;
 static Mix_Music *music_tracks[MUSIC_MAX] = { NULL };
+static SDL_bool is_music_playing = SDL_FALSE;
 static Sint32 volume_old = -1;
+static MUSIC_TRACK music_latest = 0;
+
+static Mix_Chunk *sound_effects[SOUND_MAX] = { NULL };
+static SDL_bool is_channel_playing = SDL_FALSE;
 
 static SDL_Texture *textures[TEXTURE_MAX] = { NULL };
 
@@ -48,25 +46,36 @@ static SDL_Renderer *render = NULL;
 static SDL_Rect clip_stack[10] = { { 0, 0, 0, 0} };
 static Sint32 sp = -1;
 
-static void Music_Load(void) {
-	// TODO: Load Music
-#if 0
-	music_tracks[MUSIC_BACKGROUND] = Mix_LoadMUS("assets/GAME_F1RACE_BGM.ogg");
-	music_tracks[MUSIC_BACKGROUND_LOWCOST] = Mix_LoadMUS("assets/GAME_F1RACE_BGM_LOWCOST.ogg");
-	music_tracks[MUSIC_CRASH] = Mix_LoadMUS("assets/GAME_F1RACE_CRASH.ogg");
-	music_tracks[MUSIC_GAMEOVER] = Mix_LoadMUS("assets/GAME_F1RACE_GAMEOVER.ogg");
-#endif
+static void Music_Sound_Load(void) {
+	music_tracks[MUSIC_BACKGROUND] = Mix_LoadMUS("Assets/gx_magicsushi_bgm.ogg");
+	sound_effects[SOUND_MOVE] = Mix_LoadWAV("Assets/gx_magicsushi_move.ogg");
+	sound_effects[SOUND_SELECT] = Mix_LoadWAV("Assets/gx_magicsushi_select.ogg");
+	music_tracks[MUSIC_GAMEOVER] = Mix_LoadMUS("Assets/gx_magicsushi_gameover.ogg");
 }
 
 static void Music_Play(MUSIC_TRACK track, Sint32 loop) {
+	is_music_playing = SDL_TRUE;
+	music_latest = track;
 	Mix_PlayMusic(music_tracks[track], loop);
 }
 
-static void Music_Unload(void) {
+static void Sound_Play(SOUND_EFFECT track, Sint32 loop) {
+	is_channel_playing = SDL_TRUE;
+	is_music_playing = SDL_FALSE;
+	Mix_HaltMusic();
+	if (Mix_Playing(-1))
+		Mix_HaltChannel(-1);
+	Mix_PlayChannel(-1, sound_effects[track], loop);
+}
+
+static void Music_Sound_Unload(void) {
 	int i = 0;
 	for (; i < MUSIC_MAX; ++i)
 		if (music_tracks[i])
 			Mix_FreeMusic(music_tracks[i]);
+	for (i = 0; i < SOUND_MAX; ++i)
+		if (sound_effects[i])
+			Mix_FreeChunk(sound_effects[i]);
 }
 
 static void Texture_Create_Bitmap(const char *filepath, TEXTURE texture_id) {
@@ -148,7 +157,6 @@ static void mouse_handler(SDL_MouseButtonEvent event, EVENT mouse) {
 	}
 }
 
-
 static void mouse_motion_handler(SDL_MouseMotionEvent event) {
 	mmi_pen_point_struct pos = { event.x, event.y };
 	mmi_gx_magicsushi_pen_move_hdlr(pos);
@@ -218,6 +226,12 @@ static void main_loop_step(SDL_Texture *texture) {
 				break;
 		}
 	}
+
+	is_channel_playing = Mix_Playing(-1);
+	if (!is_channel_playing && !is_music_playing) {
+		is_music_playing = SDL_TRUE;
+		Mix_PlayMusic(music_tracks[music_latest], -1);
+	}
 	SDL_SetRenderTarget(render, texture);
 
 	mmi_gx_magicsushi_cyclic_timer();
@@ -236,18 +250,25 @@ static void main_loop_step(SDL_Texture *texture) {
 
 void GFX_PLAY_SOUND_EFFECTS_MIDI(S32 music_id) {
 	fprintf(stderr, "ENTER: GFX_PLAY_SOUND_EFFECTS_MIDI: %d.\n", music_id);
+	Sound_Play(music_id, 0);
 }
 
 void GFX_STOP_SOUND_EFFECTS_MIDI(S32 music_id) {
 	fprintf(stderr, "ENTER: GFX_STOP_SOUND_EFFECTS_MIDI: %d.\n", music_id);
+//	Mix_HaltMusic();
 }
 
 void GFX_PLAY_BACKGROUND_SOUND(S32 music_id) {
 	fprintf(stderr, "ENTER: GFX_PLAY_BACKGROUND_SOUND: %d.\n", music_id);
+	if (music_id == MUSIC_BACKGROUND)
+		Music_Play(music_id, -1);
+	else if (music_id == MUSIC_GAMEOVER)
+		Music_Play(music_id, 0);
 }
 
 void GFX_STOP_BACKGROUND_SOUND(S32 music_id) {
 	fprintf(stderr, "ENTER: GFX_STOP_BACKGROUND_SOUND %d.\n", music_id);
+//	Mix_HaltMusic();
 }
 
 void mmi_gfx_draw_gameover_screen(S32 gameover_id, S32 field_id, S32 pic_id, U16 grade) {
@@ -358,7 +379,7 @@ int main(SDL_UNUSED int argc, SDL_UNUSED char *argv[]) {
 		return EXIT_FAILURE;
 	}
 
-	Music_Load();
+	Music_Sound_Load();
 
 	SDL_SetRenderTarget(render, textures[TEXTURE_SCREEN]);
 	SDL_RenderClear(render);
@@ -373,7 +394,7 @@ int main(SDL_UNUSED int argc, SDL_UNUSED char *argv[]) {
 	}
 
 	Mix_CloseAudio();
-	Music_Unload();
+	Music_Sound_Unload();
 	Texture_Unload();
 
 	SDL_DestroyRenderer(render);
