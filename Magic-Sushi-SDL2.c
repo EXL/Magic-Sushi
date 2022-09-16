@@ -45,6 +45,9 @@ static SDL_Texture *textures[TEXTURE_MAX] = { NULL };
 static SDL_bool exit_main_loop = SDL_FALSE;
 static SDL_Renderer *render = NULL;
 
+static SDL_Rect clip_stack[10] = { { 0, 0, 0, 0} };
+static Sint32 sp = -1;
+
 static void Music_Load(void) {
 	// TODO: Load Music
 #if 0
@@ -131,6 +134,44 @@ static void Texture_Unload(void) {
 			SDL_DestroyTexture(textures[i]);
 }
 
+static void key_handler(S32 key, S32 keydown) {
+	switch (keydown) {
+		case KEY_EVENT_DOWN:
+			switch (key) {
+				case SDLK_KP_5:
+				case SDLK_RETURN:
+				case SDLK_SPACE:
+					mmi_gx_magicsushi_key_5_release();
+					break;
+				case SDLK_RIGHT:
+				case SDLK_KP_6:
+					mmi_gx_magicsushi_key_6_down();
+					break;
+			}
+			break;
+		case KEY_EVENT_UP:
+			switch (key) {
+				case SDLK_UP:
+				case SDLK_KP_2:
+					mmi_gx_magicsushi_key_2_release();
+					break;
+				case SDLK_LEFT:
+				case SDLK_KP_4:
+					mmi_gx_magicsushi_key_4_release();
+					break;
+				case SDLK_RIGHT:
+				case SDLK_KP_6:
+					mmi_gx_magicsushi_key_6_release();
+					break;
+				case SDLK_DOWN:
+				case SDLK_KP_8:
+					mmi_gx_magicsushi_key_8_release();
+					break;
+			}
+			break;
+	}
+}
+
 static void main_loop_step(SDL_Texture *texture) {
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
@@ -139,10 +180,10 @@ static void main_loop_step(SDL_Texture *texture) {
 				exit_main_loop = SDL_TRUE;
 				break;
 			case SDL_KEYDOWN:
-				fprintf(stderr, "PushKey\n");
+				key_handler(event.key.keysym.sym, KEY_EVENT_DOWN);
 				break;
 			case SDL_KEYUP:
-				fprintf(stderr, "ReleaseKey\n");
+				key_handler(event.key.keysym.sym, KEY_EVENT_UP);
 				break;
 		}
 	}
@@ -163,31 +204,38 @@ static void main_loop_step(SDL_Texture *texture) {
 /* ==================================================== STUBS ======================================================= */
 
 void GFX_PLAY_SOUND_EFFECTS_MIDI(S32 music_id) {
-	fprintf(stderr, "PLAY MUSIC %d.\n", music_id);
+	fprintf(stderr, "ENTER: GFX_PLAY_SOUND_EFFECTS_MIDI: %d.\n", music_id);
 }
 
 void GFX_STOP_SOUND_EFFECTS_MIDI(S32 music_id) {
-	fprintf(stderr, "STOP MUSIC %d.\n", music_id);
+	fprintf(stderr, "ENTER: GFX_STOP_SOUND_EFFECTS_MIDI: %d.\n", music_id);
 }
 
 void GFX_PLAY_BACKGROUND_SOUND(S32 music_id) {
-	fprintf(stderr, "PLAY MUSIC %d.\n", music_id);
+	fprintf(stderr, "ENTER: GFX_PLAY_BACKGROUND_SOUND: %d.\n", music_id);
 }
 
 void GFX_STOP_BACKGROUND_SOUND(S32 music_id) {
-	fprintf(stderr, "STOP MUSIC %d.\n", music_id);
+	fprintf(stderr, "ENTER: GFX_STOP_BACKGROUND_SOUND %d.\n", music_id);
 }
 
 void mmi_gfx_draw_gameover_screen(S32 gameover_id, S32 field_id, S32 pic_id, U16 grade) {
-	fprintf(stderr, "DRAW GAMEOVER %d %d %d %hu.\n", gameover_id, field_id, pic_id, grade);
+	fprintf(stderr, "ENTER: mmi_gfx_draw_gameover_screen: %d %d %d %hu.\n", gameover_id, field_id, pic_id, grade);
 }
 
 void gdi_layer_push_clip(void) {
-	fprintf(stderr, "ENTER: gdi_layer_push_clip.\n");
+	fprintf(stderr, "ENTER: gdi_layer_push_clip: %d.\n", sp);
+	sp++;
+	SDL_RenderGetClipRect(render, &clip_stack[sp]);
 }
 
 void gdi_layer_pop_clip(void) {
-	fprintf(stderr, "ENTER: gdi_layer_pop_clip.\n");
+	fprintf(stderr, "ENTER: gdi_layer_pop_clip: %d.\n", sp);
+	sp--;
+	if (sp < 0)
+		SDL_RenderSetClipRect(render, NULL);
+	else
+		SDL_RenderSetClipRect(render, &clip_stack[sp]);
 }
 
 void gdi_layer_set_clip(S32 x, S32 y, S32 w, S32 h) {
@@ -216,7 +264,7 @@ void gdi_draw_solid_rect(S32 x, S32 y, S32 w, S32 h, U32 c) {
 	SDL_Rect r = { x, y, w - x, h - y };
 	if (c == GDI_COLOR_TRANSPARENT) {
 		// TODO: Damn! This hack is so ugly. UGLY!!1
-		Texture_Draw_Piece(x, y, w, h, IMG_ID_GX_MAGICSUSHI_GAME_BACKGROUND);
+		Texture_Draw_Piece(x - 2, y - 2, w + 2, h + 2, IMG_ID_GX_MAGICSUSHI_GAME_BACKGROUND);
 	} else {
 		switch (c) {
 			case GDI_COLOR_RED:
@@ -296,7 +344,7 @@ int main(SDL_UNUSED int argc, SDL_UNUSED char *argv[]) {
 
 	while (!exit_main_loop) {
 		main_loop_step(textures[TEXTURE_SCREEN]);
-		SDL_Delay(FPS_COUNTER); // 10 fps.
+		SDL_Delay(FPS_COUNTER); // ~10 fps.
 	}
 
 	Mix_CloseAudio();

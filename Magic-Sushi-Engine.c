@@ -2049,7 +2049,9 @@ void mmi_gx_magicsushi_key_2_release(void)
         g_gx_magicsushi_context.cursor_y++;
         g_gx_magicsushi_context.last_key = 2;
         
+#ifndef FIX_CLIPPING_HACK
         mmi_gx_magicsushi_cyclic_timer();
+#endif
         gui_cancel_timer(mmi_gx_magicsushi_cyclic_timer);
         gui_start_timer(g_gx_magicsushi_context.timer_elapse, mmi_gx_magicsushi_cyclic_timer);
     }
@@ -2089,7 +2091,9 @@ void mmi_gx_magicsushi_key_4_release(void)
         g_gx_magicsushi_context.cursor_x--;
         g_gx_magicsushi_context.last_key = 4;
 
+#ifndef FIX_CLIPPING_HACK
         mmi_gx_magicsushi_cyclic_timer();
+#endif
         gui_cancel_timer(mmi_gx_magicsushi_cyclic_timer);
         gui_start_timer(g_gx_magicsushi_context.timer_elapse, mmi_gx_magicsushi_cyclic_timer);
     }
@@ -2150,7 +2154,9 @@ void mmi_gx_magicsushi_key_6_release(void)
         g_gx_magicsushi_context.cursor_x++;
         g_gx_magicsushi_context.last_key = 6;
 
+#ifndef FIX_CLIPPING_HACK
         mmi_gx_magicsushi_cyclic_timer();
+#endif
         gui_cancel_timer(mmi_gx_magicsushi_cyclic_timer);
         gui_start_timer(g_gx_magicsushi_context.timer_elapse, mmi_gx_magicsushi_cyclic_timer);
     }
@@ -2190,7 +2196,9 @@ void mmi_gx_magicsushi_key_8_release(void)
         g_gx_magicsushi_context.cursor_y--;
         g_gx_magicsushi_context.last_key = 8;
 
+#ifndef FIX_CLIPPING_HACK
         mmi_gx_magicsushi_cyclic_timer();
+#endif
         gui_cancel_timer(mmi_gx_magicsushi_cyclic_timer);
         gui_start_timer(g_gx_magicsushi_context.timer_elapse, mmi_gx_magicsushi_cyclic_timer);
     }

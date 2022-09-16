@@ -9,6 +9,8 @@
 #define __MMI_GAME_MULTICHANNEL_SOUND__
 // #define __MMI_GAME_MULTI_LANGUAGE_SUPPORT__
 
+#define FIX_CLIPPING_HACK
+
 #define __MMI_MAINLCD_240X320__
 // #define __MMI_MAINLCD_320X240__
 // #define __MMI_MAINLCD_240X400__
@@ -156,6 +158,12 @@ extern void gdi_draw_solid_rect(S32 x, S32 y, S32 w, S32 h, U32 c);
 
 extern void mmi_gx_magicsushi_enter_game(void);
 extern void mmi_gx_magicsushi_cyclic_timer(void);
+extern void mmi_gx_magicsushi_key_6_down(void);
+extern void mmi_gx_magicsushi_key_2_release(void);
+extern void mmi_gx_magicsushi_key_4_release(void);
+extern void mmi_gx_magicsushi_key_5_release(void);
+extern void mmi_gx_magicsushi_key_6_release(void);
+extern void mmi_gx_magicsushi_key_8_release(void);
 
 /* ================================================================================================================== */
 
