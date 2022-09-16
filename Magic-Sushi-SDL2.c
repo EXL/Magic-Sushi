@@ -286,6 +286,7 @@ void GFX_STOP_BACKGROUND_SOUND(S32 music_id) {
 
 void mmi_gfx_draw_gameover_screen(S32 gameover_id, S32 field_id, S32 pic_id, U16 grade) {
 	fprintf(stderr, "ENTER: mmi_gfx_draw_gameover_screen: %d %d %d %hu.\n", gameover_id, field_id, pic_id, grade);
+	gdi_layer_clear_background(0);
 }
 
 void gdi_layer_push_clip(void) {
@@ -311,7 +312,7 @@ void gdi_layer_set_clip(S32 x, S32 y, S32 w, S32 h) {
 
 void gdi_layer_clear_background(U32 c) {
 //	fprintf(stderr, "ENTER: gdi_layer_clear_background %u.\n", c);
-	SDL_SetRenderDrawColor(render, 255, 0, 0, 0);
+	SDL_SetRenderDrawColor(render, 255, 255, 255, 0);
 	SDL_RenderClear(render);
 }
 
