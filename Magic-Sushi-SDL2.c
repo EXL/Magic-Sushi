@@ -263,7 +263,9 @@ static void main_loop_step(SDL_Texture *texture) {
 
 void GFX_PLAY_SOUND_EFFECTS_MIDI(S32 music_id) {
 	fprintf(stderr, "ENTER: GFX_PLAY_SOUND_EFFECTS_MIDI: %d.\n", music_id);
-	Sound_Play(music_id, 0);
+	if (music_latest != MUSIC_GAMEOVER) {
+		Sound_Play(music_id, 0);
+	}
 }
 
 void GFX_STOP_SOUND_EFFECTS_MIDI(S32 music_id) {

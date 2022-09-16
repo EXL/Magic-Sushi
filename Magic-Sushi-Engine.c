@@ -605,7 +605,7 @@ typedef struct
     S16 remainder;
     U8 check;
     U8 total_time;
-    U8 remain_time;
+    S16 remain_time;
     U16 tick;
     U8 animation_step;
     U8 animation_mode;
@@ -675,6 +675,8 @@ gx_magicsushi_context_struct g_gx_magicsushi_context =
 static U16 mmi_magicsushi_language_index;
 #define MMI_MAGICSUSHI_STRING_COUNT MMI_MAGICSUSHI_STRING_TOTAL
 #endif /* __MMI_GAME_MULTI_LANGUAGE_SUPPORT__ */
+
+static S16 game_over_count_down;
 
 /***************************************************************************** 
 * Local Function
@@ -1925,6 +1927,7 @@ void mmi_gx_magicsushi_enter_game(void)
     /*----------------------------------------------------------------*/
     /* Local Variables                                                */
     /*----------------------------------------------------------------*/
+    game_over_count_down = 10;
 
     /*----------------------------------------------------------------*/
     /* Code Body                                                      */
@@ -2595,7 +2598,6 @@ void mmi_gx_magicsushi_gameover(void)
     /* call this function to draw gameover screen */
     mmi_gfx_entry_gameover_screen();
 #ifdef FIX_GAMEOVER_HACK
-	mmi_gx_magicsushi_draw_gameover();
 	mmi_gx_magicsushi_enter_game();
 #endif
 }
@@ -2633,9 +2635,18 @@ void mmi_gx_magicsushi_cyclic_timer(void)   /* done */
     {
         --g_gx_magicsushi_context.remain_time;
 
-        if (g_gx_magicsushi_context.remain_time == 0)
+        if (g_gx_magicsushi_context.remain_time < 0)
         {
-            mmi_gx_magicsushi_gameover();
+			g_gx_magicsushi_context.is_gameover = TRUE;
+		    g_gx_magicsushi_context.is_new_game = TRUE;
+			game_over_count_down--;
+
+			mmi_gx_magicsushi_draw_gameover();
+
+			if (game_over_count_down == 9)
+				GFX_PLAY_BACKGROUND_SOUND(MUSIC_GAMEOVER);
+			if (game_over_count_down <= 0)
+				mmi_gx_magicsushi_enter_game();
         }
     }
     if (g_gx_magicsushi_context.is_gameover == FALSE)
