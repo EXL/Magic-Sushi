@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Magic Sushi</title>
+	</head>
+	<body>
+		<table style="margin: 10px">
+			<tbody>
+				<tr>
+					<td>
+						<canvas id="canvas" oncontextmenu="event.preventDefault()" width="320" height="480"></canvas>
+					</td>
+					<td style="padding-left: 25px">
+						<h3>Magic Sushi</h3>
+						<p>Port of the game from MTK OS to SDL2 and <a href="https://emscripten.org/" title="Emscripten is a complete compiler toolchain to WebAssembly, using LLVM, with a special focus on speed, size, and the Web platform." target="_blank">Emscripten</a>.</p>
+						<p><strong>Controls:</strong></p>
+						<ul>
+							<li>Arrows and 4, 6, 8, 2 on Keypad &ndash; Move cursor.</li>
+							<li>Mouse Click, Space, Return and 5 on Keypad &ndash; Select tile.</li>
+							<li>M and 7 on Keypad &ndash; Mute sound.</li>
+						</ul>
+						<p><strong>Source code:</strong></p>
+						<p><a href="https://github.com/EXL/Magic-Sushi" title="Magic Sushi GitHub Repository" target="_blank">https://github.com/EXL/Magic-Sushi</a></p>
+						<p><strong><em>&#169; <a href="https://github.com/EXL" title="@EXL" target="_blank">EXL</a>, <a href="https://github.com/nehochupechatat" title="@nehochupechatat" target="_blank">nehochupechatat</a>, <a href="https://twitter.com/oldphonepreserv" title="@OldPhonePreservation" target="_blank">OldPhonePreservation</a> on 17-Sep-2022.</strong></em></p>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<script type='text/javascript'>
+			var Module = {
+				canvas: (function() { return document.getElementById('canvas'); })()
+			};
+		</script>
+		<script src="Magic-Sushi.js"></script>
+	</body>
+</html>

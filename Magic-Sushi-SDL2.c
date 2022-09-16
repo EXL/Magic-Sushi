@@ -22,6 +22,10 @@
 
 #include "Magic-Sushi-Head.h"
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
@@ -46,6 +50,12 @@ static SDL_Renderer *render = NULL;
 
 static SDL_Rect clip_stack[10] = { { 0, 0, 0, 0} };
 static Sint32 sp = -1;
+
+#ifdef __EMSCRIPTEN__
+typedef struct {
+	SDL_Texture *texture;
+} CONTEXT_EMSCRIPTEN;
+#endif
 
 static void Music_Sound_Load(void) {
 	music_tracks[MUSIC_BACKGROUND] = Mix_LoadMUS("Assets/gx_magicsushi_bgm.ogg");
@@ -355,6 +365,13 @@ void gdi_draw_solid_rect(S32 x, S32 y, S32 w, S32 h, U32 c) {
 
 /* ================================================================================================================== */
 
+#ifdef __EMSCRIPTEN__
+static void main_loop_emscripten(void *arguments) {
+	CONTEXT_EMSCRIPTEN *context = arguments;
+	main_loop_step(context->texture);
+}
+#endif
+
 int main(SDL_UNUSED int argc, SDL_UNUSED char *argv[]) {
 	srand(time(0));
 
@@ -408,10 +425,16 @@ int main(SDL_UNUSED int argc, SDL_UNUSED char *argv[]) {
 
 	SDL_SetRenderTarget(render, NULL);
 
+#ifndef __EMSCRIPTEN__
 	while (!exit_main_loop) {
 		main_loop_step(textures[TEXTURE_SCREEN]);
 		SDL_Delay(FPS_COUNTER); // ~10 fps.
 	}
+#else
+	CONTEXT_EMSCRIPTEN context;
+	context.texture = textures[TEXTURE_SCREEN];
+	emscripten_set_main_loop_arg(main_loop_emscripten, &context, 10, 1); // 10 fps.
+#endif
 
 	Mix_CloseAudio();
 	Music_Sound_Unload();

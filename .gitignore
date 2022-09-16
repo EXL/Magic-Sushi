@@ -7,3 +7,7 @@ Qt-Creator-Project
 *.user
 Magic-Sushi-SDL1
 Magic-Sushi-SDL2
+Magic-Sushi.data
+Magic-Sushi.html
+Magic-Sushi.js
+Magic-Sushi.wasm
