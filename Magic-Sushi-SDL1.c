@@ -12,7 +12,7 @@
  *   15-Sep-2022: Created initial draft/demo version.
  *
  * Compile commands:
- *   $ clear && clear && gcc Magic-Sushi-SDL1.c -o Magic-Sushi-SDL1 \
+ *   $ clear && clear && gcc Magic-Sushi-SDL1.c Magic-Sushi-Engine.c -o Magic-Sushi-SDL1 \
  *       -lSDL -lSDL_mixer && strip -s Magic-Sushi-SDL1 && ./Magic-Sushi-SDL1
  */
 
