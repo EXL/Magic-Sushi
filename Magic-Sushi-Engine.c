@@ -2589,6 +2589,10 @@ void mmi_gx_magicsushi_gameover(void)
 
     /* call this function to draw gameover screen */
     mmi_gfx_entry_gameover_screen();
+#ifdef FIX_GAMEOVER_HACK
+	mmi_gx_magicsushi_draw_gameover();
+	mmi_gx_magicsushi_enter_game();
+#endif
 }
 
 

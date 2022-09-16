@@ -276,12 +276,6 @@ void gdi_draw_solid_rect(S32 x, S32 y, S32 w, S32 h, U32 c) {
 			case GDI_COLOR_BLUE:
 				SDL_SetRenderDrawColor(render, 0, 0, 255, 0);
 				break;
-	//		case GDI_COLOR_TRANSPARENT:
-	//			SDL_SetRenderDrawColor(render, 255, 255, 255, 0);
-	//			break;
-			default:
-				exit_main_loop = TRUE; // TODO: DELETE THIS!
-				break;
 		}
 		SDL_RenderFillRect(render, &r);
 	}
