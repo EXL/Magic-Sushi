@@ -728,6 +728,7 @@ static void mmi_gx_magicsushi_rsk_release(void);
  *****************************************************************************/
 void mmi_gx_magicsushi_enter_gfx(void)
 {
+#if 0
     /*----------------------------------------------------------------*/
     /* Local Variables                                                */
     /*----------------------------------------------------------------*/
@@ -770,7 +771,7 @@ void mmi_gx_magicsushi_enter_gfx(void)
 
     /* some flags */
     GFX.game_data.is_keypad_audio_enable = FALSE;   /* play keypad tone or not */
-
+#endif
     mmi_gfx_entry_menu_screen();
 }
 

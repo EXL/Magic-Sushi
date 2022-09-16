@@ -36,10 +36,6 @@ typedef enum MUSIC_TRACKS {
 static Mix_Music *music_tracks[MUSIC_MAX] = { NULL };
 static Sint32 volume_old = -1;
 
-typedef enum TEXTURES {
-	TEXTURE_SCREEN,
-	TEXTURE_MAX
-} TEXTURE;
 static SDL_Texture *textures[TEXTURE_MAX] = { NULL };
 
 static SDL_bool exit_main_loop = SDL_FALSE;
