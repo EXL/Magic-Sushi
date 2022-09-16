@@ -9,11 +9,15 @@
  *   MIT
  *
  * History:
+ *   16-Sep-2022: Implemented engine + shell concept.
  *   15-Sep-2022: Created initial draft/demo version.
  *
  * Compile commands:
  *   $ clear && clear && gcc Magic-Sushi-SDL2.c Magic-Sushi-Engine.c -o Magic-Sushi-SDL2 \
  *       -lSDL2 -lSDL2_image -lSDL2_mixer && strip -s Magic-Sushi-SDL2 && ./Magic-Sushi-SDL2
+ *
+ * More information:
+ *   https://www.youtube.com/watch?v=Mmv73Kck6Co
  */
 
 #include "Magic-Sushi-Head.h"
@@ -69,50 +73,55 @@ static void Texture_Create_Bitmap(const char *filepath, TEXTURE texture_id) {
 }
 
 static void Texture_Load(void) {
-	Texture_Create_Bitmap("Assets/gx_magicsushi_num_0.bmp", IMG_ID_GX_MAGICSUSHI_NUMBER_0);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_num_1.bmp", IMG_ID_GX_MAGICSUSHI_NUMBER_1);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_num_2.bmp", IMG_ID_GX_MAGICSUSHI_NUMBER_2);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_num_3.bmp", IMG_ID_GX_MAGICSUSHI_NUMBER_3);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_num_4.bmp", IMG_ID_GX_MAGICSUSHI_NUMBER_4);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_num_5.bmp", IMG_ID_GX_MAGICSUSHI_NUMBER_5);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_num_6.bmp", IMG_ID_GX_MAGICSUSHI_NUMBER_6);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_num_7.bmp", IMG_ID_GX_MAGICSUSHI_NUMBER_7);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_num_8.bmp", IMG_ID_GX_MAGICSUSHI_NUMBER_8);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_num_9.bmp", IMG_ID_GX_MAGICSUSHI_NUMBER_9);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_item_null.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_NULL);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_select.bmp", IMG_ID_GX_MAGICSUSHI_SELECTED);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_progress.bmp", IMG_ID_GX_MAGICSUSHI_PROGRESS);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_item_1.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_0);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_item_2.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_1);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_item_3.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_2);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_item_4.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_3);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_item_5.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_4);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_item_6.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_5);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_item_7.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_6);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_item_8.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_7);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_magic_1.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_MAGIC1);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_magic_2.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_MAGIC2);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_magic_3.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_MAGIC3);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_background.bmp", IMG_ID_GX_MAGICSUSHI_GAME_BACKGROUND);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_gameover_TimeOut_E.bmp", IMG_ID_GX_MAGICSUSHI_GAMEOVER);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_uplevel.bmp", IMG_ID_GX_MAGICSUSHI_UPLEVEL);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_nomoremove.bmp", IMG_ID_GX_MAGICSUSHI_NOMOREMOVE);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_select1.bmp", IMG_ID_GX_MAGICSUSHI_CURSOR);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_down.bmp", IMG_ID_GX_MAGICSUSHI_DOWN);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_up.bmp", IMG_ID_GX_MAGICSUSHI_UP);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_ScoreBG.bmp", IMG_ID_GX_MAGICSUSHI_GRADEMAP);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_Food.bmp", IMG_ID_GX_MAGICSUSHI_GOPIC);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_num_0.png", IMG_ID_GX_MAGICSUSHI_NUMBER_0);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_num_1.png", IMG_ID_GX_MAGICSUSHI_NUMBER_1);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_num_2.png", IMG_ID_GX_MAGICSUSHI_NUMBER_2);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_num_3.png", IMG_ID_GX_MAGICSUSHI_NUMBER_3);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_num_4.png", IMG_ID_GX_MAGICSUSHI_NUMBER_4);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_num_5.png", IMG_ID_GX_MAGICSUSHI_NUMBER_5);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_num_6.png", IMG_ID_GX_MAGICSUSHI_NUMBER_6);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_num_7.png", IMG_ID_GX_MAGICSUSHI_NUMBER_7);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_num_8.png", IMG_ID_GX_MAGICSUSHI_NUMBER_8);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_num_9.png", IMG_ID_GX_MAGICSUSHI_NUMBER_9);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_item_null.png", IMG_ID_GX_MAGICSUSHI_TYPE_NULL);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_select.png", IMG_ID_GX_MAGICSUSHI_SELECTED);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_progress.png", IMG_ID_GX_MAGICSUSHI_PROGRESS);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_item_1.png", IMG_ID_GX_MAGICSUSHI_TYPE_0);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_item_2.png", IMG_ID_GX_MAGICSUSHI_TYPE_1);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_item_3.png", IMG_ID_GX_MAGICSUSHI_TYPE_2);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_item_4.png", IMG_ID_GX_MAGICSUSHI_TYPE_3);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_item_5.png", IMG_ID_GX_MAGICSUSHI_TYPE_4);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_item_6.png", IMG_ID_GX_MAGICSUSHI_TYPE_5);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_item_7.png", IMG_ID_GX_MAGICSUSHI_TYPE_6);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_item_8.png", IMG_ID_GX_MAGICSUSHI_TYPE_7);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_magic_1.png", IMG_ID_GX_MAGICSUSHI_TYPE_MAGIC1);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_magic_2.png", IMG_ID_GX_MAGICSUSHI_TYPE_MAGIC2);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_magic_3.png", IMG_ID_GX_MAGICSUSHI_TYPE_MAGIC3);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_background.png", IMG_ID_GX_MAGICSUSHI_GAME_BACKGROUND);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_gameover_TimeOut_E.png", IMG_ID_GX_MAGICSUSHI_GAMEOVER);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_uplevel.png", IMG_ID_GX_MAGICSUSHI_UPLEVEL);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_nomoremove.png", IMG_ID_GX_MAGICSUSHI_NOMOREMOVE);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_select1.png", IMG_ID_GX_MAGICSUSHI_CURSOR);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_down.png", IMG_ID_GX_MAGICSUSHI_DOWN);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_up.png", IMG_ID_GX_MAGICSUSHI_UP);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_ScoreBG.png", IMG_ID_GX_MAGICSUSHI_GRADEMAP);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_Food.png", IMG_ID_GX_MAGICSUSHI_GOPIC);
 
 	textures[TEXTURE_SCREEN] =
 		SDL_CreateTexture(render, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 }
 
 static void Texture_Draw(Sint32 x, Sint32 y, TEXTURE texture_id) {
-	SDL_Rect rectangle;
-	rectangle.x = x;
-	rectangle.y = y;
-	SDL_QueryTexture(textures[texture_id], NULL, NULL, &rectangle.w, &rectangle.h);
-	SDL_RenderCopy(render, textures[texture_id], NULL, &rectangle);
+	SDL_Rect r;
+	r.x = x;
+	r.y = y;
+	SDL_QueryTexture(textures[texture_id], NULL, NULL, &r.w, &r.h);
+	SDL_RenderCopy(render, textures[texture_id], NULL, &r);
+}
+
+static void Texture_Draw_Piece(Sint32 x, Sint32 y, Sint32 w, Sint32 h, TEXTURE texture_id) {
+	SDL_Rect r = { x, y, w - x, h - y};
+	SDL_RenderCopy(render, textures[texture_id], &r, &r);
 }
 
 static void Texture_Unload(void) {
@@ -183,7 +192,7 @@ void gdi_layer_pop_clip(void) {
 
 void gdi_layer_set_clip(S32 x, S32 y, S32 w, S32 h) {
 	fprintf(stderr, "ENTER: gdi_layer_set_clip %d %d %d %d.\n", x, y, w, h);
-	SDL_Rect r = { x, y, w, h };
+	SDL_Rect r = { x, y, w - x, h - y };
 	SDL_RenderSetClipRect(render, &r);
 }
 
@@ -204,6 +213,30 @@ void gdi_image_draw_id(S32 x, S32 y, TEXTURE texture_id) {
 
 void gdi_draw_solid_rect(S32 x, S32 y, S32 w, S32 h, U32 c) {
 	fprintf(stderr, "ENTER: gdi_draw_solid_rect %d %d %d %d %u.\n", x, y, w, h, c);
+	SDL_Rect r = { x, y, w - x, h - y };
+	if (c == GDI_COLOR_TRANSPARENT) {
+		// TODO: Damn! This hack is so ugly. UGLY!!1
+		Texture_Draw_Piece(x, y, w, h, IMG_ID_GX_MAGICSUSHI_GAME_BACKGROUND);
+	} else {
+		switch (c) {
+			case GDI_COLOR_RED:
+				SDL_SetRenderDrawColor(render, 255, 0, 0, 0);
+				break;
+			case GDI_COLOR_GREEN:
+				SDL_SetRenderDrawColor(render, 0, 255, 0, 0);
+				break;
+			case GDI_COLOR_BLUE:
+				SDL_SetRenderDrawColor(render, 0, 0, 255, 0);
+				break;
+	//		case GDI_COLOR_TRANSPARENT:
+	//			SDL_SetRenderDrawColor(render, 255, 255, 255, 0);
+	//			break;
+			default:
+				exit_main_loop = TRUE; // TODO: DELETE THIS!
+				break;
+		}
+		SDL_RenderFillRect(render, &r);
+	}
 }
 
 /* ================================================================================================================== */
