@@ -1597,7 +1597,9 @@ void mmi_gx_magicsushi_pen_move_hdlr(mmi_pen_point_struct pos)
     
     if (is_changed)
     {
+#ifndef FIX_CLIPPING_HACK
         mmi_gx_magicsushi_render();
+#endif
     }
 
 }

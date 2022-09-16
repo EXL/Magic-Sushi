@@ -134,7 +134,27 @@ static void Texture_Unload(void) {
 			SDL_DestroyTexture(textures[i]);
 }
 
-static void key_handler(S32 key, S32 keydown) {
+static void mouse_handler(SDL_MouseButtonEvent event, EVENT mouse) {
+	mmi_pen_point_struct pos = { event.x, event.y };
+	switch (mouse) {
+		case MOUSE_EVENT_DOWN:
+			mmi_gx_magicsushi_pen_down_hdlr(pos);
+			break;
+		case MOUSE_EVENT_UP:
+			mmi_gx_magicsushi_pen_up_hdlr(pos);
+			break;
+		default:
+			break;
+	}
+}
+
+
+static void mouse_motion_handler(SDL_MouseMotionEvent event) {
+	mmi_pen_point_struct pos = { event.x, event.y };
+	mmi_gx_magicsushi_pen_move_hdlr(pos);
+}
+
+static void key_handler(S32 key, EVENT keydown) {
 	switch (keydown) {
 		case KEY_EVENT_DOWN:
 			switch (key) {
@@ -169,6 +189,8 @@ static void key_handler(S32 key, S32 keydown) {
 					break;
 			}
 			break;
+		default:
+			break;
 	}
 }
 
@@ -184,6 +206,15 @@ static void main_loop_step(SDL_Texture *texture) {
 				break;
 			case SDL_KEYUP:
 				key_handler(event.key.keysym.sym, KEY_EVENT_UP);
+				break;
+			case SDL_MOUSEMOTION:
+				mouse_motion_handler(event.motion);
+				break;
+			case SDL_MOUSEBUTTONDOWN:
+				mouse_handler(event.button, MOUSE_EVENT_DOWN);
+				break;
+			case SDL_MOUSEBUTTONUP:
+				mouse_handler(event.button, MOUSE_EVENT_UP);
 				break;
 		}
 	}
@@ -224,13 +255,13 @@ void mmi_gfx_draw_gameover_screen(S32 gameover_id, S32 field_id, S32 pic_id, U16
 }
 
 void gdi_layer_push_clip(void) {
-	fprintf(stderr, "ENTER: gdi_layer_push_clip: %d.\n", sp);
+//	fprintf(stderr, "ENTER: gdi_layer_push_clip: %d.\n", sp);
 	sp++;
 	SDL_RenderGetClipRect(render, &clip_stack[sp]);
 }
 
 void gdi_layer_pop_clip(void) {
-	fprintf(stderr, "ENTER: gdi_layer_pop_clip: %d.\n", sp);
+//	fprintf(stderr, "ENTER: gdi_layer_pop_clip: %d.\n", sp);
 	sp--;
 	if (sp < 0)
 		SDL_RenderSetClipRect(render, NULL);
@@ -239,28 +270,28 @@ void gdi_layer_pop_clip(void) {
 }
 
 void gdi_layer_set_clip(S32 x, S32 y, S32 w, S32 h) {
-	fprintf(stderr, "ENTER: gdi_layer_set_clip %d %d %d %d.\n", x, y, w, h);
+//	fprintf(stderr, "ENTER: gdi_layer_set_clip %d %d %d %d.\n", x, y, w, h);
 	SDL_Rect r = { x, y, w - x, h - y };
 	SDL_RenderSetClipRect(render, &r);
 }
 
 void gdi_layer_clear_background(U32 c) {
-	fprintf(stderr, "ENTER: gdi_layer_clear_background %u.\n", c);
+//	fprintf(stderr, "ENTER: gdi_layer_clear_background %u.\n", c);
 	SDL_SetRenderDrawColor(render, 255, 0, 0, 0);
 	SDL_RenderClear(render);
 }
 
 void gdi_layer_set_active(gdi_handle layer) {
-	fprintf(stderr, "ENTER: gdi_layer_set_active.\n");
+//	fprintf(stderr, "ENTER: gdi_layer_set_active.\n");
 }
 
 void gdi_image_draw_id(S32 x, S32 y, TEXTURE texture_id) {
-	fprintf(stderr, "ENTER: gdi_image_draw_id %d %d %d.\n", x, y, texture_id);
+//	fprintf(stderr, "ENTER: gdi_image_draw_id %d %d %d.\n", x, y, texture_id);
 	Texture_Draw(x, y, texture_id);
 }
 
 void gdi_draw_solid_rect(S32 x, S32 y, S32 w, S32 h, U32 c) {
-	fprintf(stderr, "ENTER: gdi_draw_solid_rect %d %d %d %d %u.\n", x, y, w, h, c);
+//	fprintf(stderr, "ENTER: gdi_draw_solid_rect %d %d %d %d %u.\n", x, y, w, h, c);
 	SDL_Rect r = { x, y, w - x, h - y };
 	if (c == GDI_COLOR_TRANSPARENT) {
 		// TODO: Damn! This hack is so ugly. UGLY!!1

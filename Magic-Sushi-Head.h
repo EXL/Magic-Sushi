@@ -71,8 +71,14 @@ typedef struct {
 #define KEY_6 6
 #define KEY_RIGHT_ARROW 6
 #define KEY_RSK 11
-#define KEY_EVENT_DOWN 1
-#define KEY_EVENT_UP 0
+
+typedef enum EVENTS {
+	KEY_EVENT_UP,
+	KEY_EVENT_DOWN,
+	MOUSE_EVENT_MOTION,
+	MOUSE_EVENT_UP,
+	MOUSE_EVENT_DOWN,
+} EVENT;
 
 typedef enum TEXTURES {
 	IMG_ID_GX_MAGICSUSHI_NUMBER_0,           // OK
@@ -165,6 +171,9 @@ extern void mmi_gx_magicsushi_key_4_release(void);
 extern void mmi_gx_magicsushi_key_5_release(void);
 extern void mmi_gx_magicsushi_key_6_release(void);
 extern void mmi_gx_magicsushi_key_8_release(void);
+extern void mmi_gx_magicsushi_pen_down_hdlr(mmi_pen_point_struct pos);
+extern void mmi_gx_magicsushi_pen_up_hdlr(mmi_pen_point_struct pos);
+extern void mmi_gx_magicsushi_pen_move_hdlr(mmi_pen_point_struct pos);
 
 /* ================================================================================================================== */
 
