@@ -12,15 +12,23 @@
 #define FIX_CLIPPING_HACK
 #define FIX_GAMEOVER_HACK
 
+#if defined(_240x320)
 #define __MMI_MAINLCD_240X320__
-// #define __MMI_MAINLCD_320X240__
-// #define __MMI_MAINLCD_240X400__
-// #define __MMI_MAINLCD_320X480__
-
 #define WINDOW_WIDTH                                   (240)
 #define WINDOW_HEIGHT                                  (320)
 #define TEXTURE_WIDTH                                  (240)
 #define TEXTURE_HEIGHT                                 (320)
+#elif defined(_320x480)
+#define __MMI_MAINLCD_320X480__
+#define WINDOW_WIDTH                                   (320)
+#define WINDOW_HEIGHT                                  (480)
+#define TEXTURE_WIDTH                                  (320)
+#define TEXTURE_HEIGHT                                 (480)
+#else
+#error "Unknown screen resolution, please set it here!"
+#endif
+// #define __MMI_MAINLCD_320X240__
+// #define __MMI_MAINLCD_240X400__
 
 #define FPS_COUNTER                                    (100) // 10 FPS.
 #define MIX_SFX_CHANNEL                                (-1)

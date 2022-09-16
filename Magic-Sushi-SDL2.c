@@ -57,6 +57,8 @@ static void Music_Sound_Load(void) {
 static void Music_Play(MUSIC_TRACK track, Sint32 loop) {
 	is_music_playing = SDL_TRUE;
 	music_latest = track;
+	if (Mix_Playing(MIX_SFX_CHANNEL))
+		Mix_HaltChannel(MIX_SFX_CHANNEL);
 	Mix_PlayMusic(music_tracks[track], loop);
 }
 
@@ -81,6 +83,8 @@ static void Music_Sound_Unload(void) {
 
 static void Texture_Create_Bitmap(const char *filepath, TEXTURE texture_id) {
 	SDL_Surface *bitmap = IMG_Load(filepath);
+	if (bitmap == NULL)
+		fprintf(stderr, "WARNING: Cannot open '%s' file!\n", filepath);
 	textures[texture_id] = SDL_CreateTextureFromSurface(render, bitmap);
 	SDL_FreeSurface(bitmap);
 }
