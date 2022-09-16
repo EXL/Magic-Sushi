@@ -68,9 +68,6 @@ static void Texture_Create_Bitmap(const char *filepath, TEXTURE texture_id) {
 }
 
 static void Texture_Load(void) {
-	textures[TEXTURE_SCREEN] =
-		SDL_CreateTexture(render, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, TEXTURE_WIDTH, TEXTURE_HEIGHT);
-
 	Texture_Create_Bitmap("Assets/gx_magicsushi_num_0.bmp", IMG_ID_GX_MAGICSUSHI_NUMBER_0);
 	Texture_Create_Bitmap("Assets/gx_magicsushi_num_1.bmp", IMG_ID_GX_MAGICSUSHI_NUMBER_1);
 	Texture_Create_Bitmap("Assets/gx_magicsushi_num_2.bmp", IMG_ID_GX_MAGICSUSHI_NUMBER_2);
@@ -81,13 +78,9 @@ static void Texture_Load(void) {
 	Texture_Create_Bitmap("Assets/gx_magicsushi_num_7.bmp", IMG_ID_GX_MAGICSUSHI_NUMBER_7);
 	Texture_Create_Bitmap("Assets/gx_magicsushi_num_8.bmp", IMG_ID_GX_MAGICSUSHI_NUMBER_8);
 	Texture_Create_Bitmap("Assets/gx_magicsushi_num_9.bmp", IMG_ID_GX_MAGICSUSHI_NUMBER_9);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_down.bmp", IMG_ID_GX_MAGICSUSHI_DOWN);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_up.bmp", IMG_ID_GX_MAGICSUSHI_UP);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_gameover_TimeOut_E.bmp", IMG_ID_GX_MAGICSUSHI_GAMEOVER);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_Food.bmp", IMG_ID_GX_MAGICSUSHI_GOPIC);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_ScoreBG.bmp", IMG_ID_GX_MAGICSUSHI_GRADEMAP);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_background.bmp", IMG_ID_GX_MAGICSUSHI_GAME_BACKGROUND);
 	Texture_Create_Bitmap("Assets/gx_magicsushi_item_null.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_NULL);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_select.bmp", IMG_ID_GX_MAGICSUSHI_SELECTED);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_progress.bmp", IMG_ID_GX_MAGICSUSHI_PROGRESS);
 	Texture_Create_Bitmap("Assets/gx_magicsushi_item_1.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_0);
 	Texture_Create_Bitmap("Assets/gx_magicsushi_item_2.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_1);
 	Texture_Create_Bitmap("Assets/gx_magicsushi_item_3.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_2);
@@ -96,10 +89,21 @@ static void Texture_Load(void) {
 	Texture_Create_Bitmap("Assets/gx_magicsushi_item_6.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_5);
 	Texture_Create_Bitmap("Assets/gx_magicsushi_item_7.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_6);
 	Texture_Create_Bitmap("Assets/gx_magicsushi_item_8.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_7);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_select1.bmp", IMG_ID_GX_MAGICSUSHI_CURSOR);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_select.bmp", IMG_ID_GX_MAGICSUSHI_SELECTED);
-	Texture_Create_Bitmap("Assets/gx_magicsushi_nomoremove.bmp", IMG_ID_GX_MAGICSUSHI_NOMOREMOVE);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_magic_1.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_MAGIC1);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_magic_2.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_MAGIC2);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_magic_3.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_MAGIC3);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_background.bmp", IMG_ID_GX_MAGICSUSHI_GAME_BACKGROUND);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_gameover_TimeOut_E.bmp", IMG_ID_GX_MAGICSUSHI_GAMEOVER);
 	Texture_Create_Bitmap("Assets/gx_magicsushi_uplevel.bmp", IMG_ID_GX_MAGICSUSHI_UPLEVEL);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_nomoremove.bmp", IMG_ID_GX_MAGICSUSHI_NOMOREMOVE);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_select1.bmp", IMG_ID_GX_MAGICSUSHI_CURSOR);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_down.bmp", IMG_ID_GX_MAGICSUSHI_DOWN);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_up.bmp", IMG_ID_GX_MAGICSUSHI_UP);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_ScoreBG.bmp", IMG_ID_GX_MAGICSUSHI_GRADEMAP);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_Food.bmp", IMG_ID_GX_MAGICSUSHI_GOPIC);
+
+	textures[TEXTURE_SCREEN] =
+		SDL_CreateTexture(render, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 }
 
 static void Texture_Draw(Sint32 x, Sint32 y, TEXTURE texture_id) {
@@ -178,10 +182,14 @@ void gdi_layer_pop_clip(void) {
 
 void gdi_layer_set_clip(S32 x, S32 y, S32 w, S32 h) {
 	fprintf(stderr, "ENTER: gdi_layer_set_clip %d %d %d %d.\n", x, y, w, h);
+	SDL_Rect r = { x, y, w, h };
+	SDL_RenderSetClipRect(render, &r);
 }
 
 void gdi_layer_clear_background(U32 c) {
 	fprintf(stderr, "ENTER: gdi_layer_clear_background %u.\n", c);
+	SDL_SetRenderDrawColor(render, 255, 0, 0, 0);
+	SDL_RenderClear(render);
 }
 
 void gdi_layer_set_active(gdi_handle layer) {
@@ -190,6 +198,7 @@ void gdi_layer_set_active(gdi_handle layer) {
 
 void gdi_image_draw_id(S32 x, S32 y, TEXTURE texture_id) {
 	fprintf(stderr, "ENTER: gdi_image_draw_id %d %d %d.\n", x, y, texture_id);
+	Texture_Draw(x, y, texture_id);
 }
 
 void gdi_draw_solid_rect(S32 x, S32 y, S32 w, S32 h, U32 c) {
