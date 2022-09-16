@@ -13,12 +13,13 @@
  *
  * Compile commands:
  *   $ clear && clear && gcc Magic-Sushi-SDL2.c Magic-Sushi-Engine.c -o Magic-Sushi-SDL2 \
- *       -lSDL2 -lSDL2_mixer && strip -s Magic-Sushi-SDL2 && ./Magic-Sushi-SDL2
+ *       -lSDL2 -lSDL2_image -lSDL2_mixer && strip -s Magic-Sushi-SDL2 && ./Magic-Sushi-SDL2
  */
 
 #include "Magic-Sushi-Head.h"
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 
 #include <stdio.h>
@@ -62,7 +63,7 @@ static void Music_Unload(void) {
 }
 
 static void Texture_Create_Bitmap(const char *filepath, TEXTURE texture_id) {
-	SDL_Surface *bitmap = SDL_LoadBMP(filepath);
+	SDL_Surface *bitmap = IMG_Load(filepath);
 	textures[texture_id] = SDL_CreateTextureFromSurface(render, bitmap);
 	SDL_FreeSurface(bitmap);
 }
