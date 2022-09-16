@@ -70,6 +70,36 @@ static void Texture_Create_Bitmap(const char *filepath, TEXTURE texture_id) {
 static void Texture_Load(void) {
 	textures[TEXTURE_SCREEN] =
 		SDL_CreateTexture(render, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+
+	Texture_Create_Bitmap("Assets/gx_magicsushi_num_0.bmp", IMG_ID_GX_MAGICSUSHI_NUMBER_0);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_num_1.bmp", IMG_ID_GX_MAGICSUSHI_NUMBER_1);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_num_2.bmp", IMG_ID_GX_MAGICSUSHI_NUMBER_2);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_num_3.bmp", IMG_ID_GX_MAGICSUSHI_NUMBER_3);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_num_4.bmp", IMG_ID_GX_MAGICSUSHI_NUMBER_4);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_num_5.bmp", IMG_ID_GX_MAGICSUSHI_NUMBER_5);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_num_6.bmp", IMG_ID_GX_MAGICSUSHI_NUMBER_6);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_num_7.bmp", IMG_ID_GX_MAGICSUSHI_NUMBER_7);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_num_8.bmp", IMG_ID_GX_MAGICSUSHI_NUMBER_8);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_num_9.bmp", IMG_ID_GX_MAGICSUSHI_NUMBER_9);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_down.bmp", IMG_ID_GX_MAGICSUSHI_DOWN);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_up.bmp", IMG_ID_GX_MAGICSUSHI_UP);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_gameover_TimeOut_E.bmp", IMG_ID_GX_MAGICSUSHI_GAMEOVER);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_Food.bmp", IMG_ID_GX_MAGICSUSHI_GOPIC);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_ScoreBG.bmp", IMG_ID_GX_MAGICSUSHI_GRADEMAP);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_background.bmp", IMG_ID_GX_MAGICSUSHI_GAME_BACKGROUND);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_item_null.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_NULL);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_item_1.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_0);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_item_2.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_1);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_item_3.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_2);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_item_4.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_3);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_item_5.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_4);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_item_6.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_5);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_item_7.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_6);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_item_8.bmp", IMG_ID_GX_MAGICSUSHI_TYPE_7);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_select1.bmp", IMG_ID_GX_MAGICSUSHI_CURSOR);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_select.bmp", IMG_ID_GX_MAGICSUSHI_SELECTED);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_nomoremove.bmp", IMG_ID_GX_MAGICSUSHI_NOMOREMOVE);
+	Texture_Create_Bitmap("Assets/gx_magicsushi_uplevel.bmp", IMG_ID_GX_MAGICSUSHI_UPLEVEL);
 }
 
 static void Texture_Draw(Sint32 x, Sint32 y, TEXTURE texture_id) {
