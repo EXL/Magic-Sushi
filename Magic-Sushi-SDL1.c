@@ -58,17 +58,15 @@ static Uint32 time_since_last_frame = 0;
 #endif
 
 static void Music_Sound_Load(void) {
+#ifndef _EZX
 	music_tracks[MUSIC_BACKGROUND] = Mix_LoadMUS("Assets/gx_magicsushi_bgm.ogg");
-	sound_effects[SOUND_MOVE] = Mix_LoadWAV("Assets/gx_magicsushi_move.ogg");
 	sound_effects[SOUND_SELECT] = Mix_LoadWAV("Assets/gx_magicsushi_select.ogg");
+#endif
+	sound_effects[SOUND_MOVE] = Mix_LoadWAV("Assets/gx_magicsushi_move.ogg");
 	music_tracks[MUSIC_GAMEOVER] = Mix_LoadMUS("Assets/gx_magicsushi_gameover.ogg");
 }
 
 static void Music_Play(MUSIC_TRACK track, Sint32 loop) {
-#ifdef _EZX
-	if (track == MUSIC_BACKGROUND)
-		return;
-#endif
 	is_music_playing = SDL_TRUE;
 	music_latest = track;
 	if (Mix_Playing(MIX_SFX_CHANNEL))
@@ -77,10 +75,6 @@ static void Music_Play(MUSIC_TRACK track, Sint32 loop) {
 }
 
 static void Sound_Play(SOUND_EFFECT track, Sint32 loop) {
-#ifdef _EZX
-	if (track == SOUND_SELECT)
-		return;
-#endif
 	if (track != SOUND_SELECT) {
 		is_channel_playing = SDL_TRUE;
 		is_music_playing = SDL_FALSE;
@@ -406,10 +400,7 @@ static void main_loop_step(SDL_Surface *texture) {
 	is_channel_playing = Mix_Playing(MIX_SFX_CHANNEL);
 	if (!is_channel_playing && !is_music_playing && (music_latest == MUSIC_BACKGROUND)) {
 		is_music_playing = SDL_TRUE;
-#ifdef _EZX
-		if (music_latest != MUSIC_BACKGROUND)
-#endif
-			Mix_PlayMusic(music_tracks[music_latest], -1);
+		Mix_PlayMusic(music_tracks[music_latest], -1);
 	}
 
 #ifdef _EZX
