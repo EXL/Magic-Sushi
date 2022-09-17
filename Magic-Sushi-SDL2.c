@@ -192,16 +192,19 @@ static void key_handler(S32 key, EVENT keydown) {
 	switch (keydown) {
 		case KEY_EVENT_DOWN:
 			switch (key) {
+				case SDLK_5:
 				case SDLK_KP_5:
 				case SDLK_RETURN:
 				case SDLK_SPACE:
 					mmi_gx_magicsushi_key_5_release();
 					break;
 				case SDLK_RIGHT:
+				case SDLK_6:
 				case SDLK_KP_6:
 					mmi_gx_magicsushi_key_6_down();
 					break;
 				case SDLK_m:
+				case SDLK_7:
 				case SDLK_KP_7:
 					if (volume_music_old == -1 && volume_channel_old == -1) {
 						volume_music_old = Mix_VolumeMusic(0);
@@ -218,19 +221,23 @@ static void key_handler(S32 key, EVENT keydown) {
 		case KEY_EVENT_UP:
 			switch (key) {
 				case SDLK_UP:
-				case SDLK_KP_2:
+				case SDLK_2:
+				case SDLK_KP_8:
 					mmi_gx_magicsushi_key_2_release();
 					break;
 				case SDLK_LEFT:
+				case SDLK_4:
 				case SDLK_KP_4:
 					mmi_gx_magicsushi_key_4_release();
 					break;
 				case SDLK_RIGHT:
+				case SDLK_6:
 				case SDLK_KP_6:
 					mmi_gx_magicsushi_key_6_release();
 					break;
 				case SDLK_DOWN:
-				case SDLK_KP_8:
+				case SDLK_8:
+				case SDLK_KP_2:
 					mmi_gx_magicsushi_key_8_release();
 					break;
 			}
