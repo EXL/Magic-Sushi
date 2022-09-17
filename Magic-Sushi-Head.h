@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #define __MMI_GAME_MAGICSUSHI__
 #define __MMI_TOUCH_SCREEN__
@@ -11,6 +12,13 @@
 
 #define FIX_CLIPPING_HACK
 #define FIX_GAMEOVER_HACK
+// #define USE_DEBUG_OUTPUT
+
+#ifdef USE_DEBUG_OUTPUT
+#define D(format, ...) do { fprintf(stderr, format, __VA_ARGS__); } while (0)
+#else
+#define D(format, ...)
+#endif
 
 #if defined(_240x320)
 #define __MMI_MAINLCD_240X320__
@@ -30,7 +38,8 @@
 // #define __MMI_MAINLCD_320X240__
 // #define __MMI_MAINLCD_240X400__
 
-#define FPS_COUNTER                                    (100) // 10 FPS.
+#define FPS_COUNTER                                    (100) // 100 ms, ~10 FPS.
+#define FPS_EMSCRIPTEN_COUNTER                         (10)  // 10 FPS.
 #define MIX_SFX_CHANNEL                                (-1)
 
 #define __align(x)
@@ -136,6 +145,7 @@ typedef enum TEXTURES {
 	IMG_ID_GX_MAGICSUSHI_UP,                 // OK
 	IMG_ID_GX_MAGICSUSHI_GRADEMAP,           // OK
 	IMG_ID_GX_MAGICSUSHI_GOPIC,              // OK
+	IMG_ID_GX_MAGICSUSHI_LOADING,            // OK, Custom screen.
 	TEXTURE_SCREEN,                          // OK
 	TEXTURE_MAX
 } TEXTURE;
@@ -147,7 +157,7 @@ typedef enum TEXTURES {
 #define GFX_STOP_DUMMY_BACKGROUND_SOUND()
 #define GFX_CLOSE_DUMMY_BACKGROUND_SOUND()
 #define GFX_CLOSE_BACKGROUND_SOUND(x)
-#define GFX_PLAY_AUDIO_COMPLETE() // TODO: GameOver sound?
+#define GFX_PLAY_AUDIO_COMPLETE()
 #define GFX_OPEN_DUMMY_BACKGROUND_SOUND()
 #define GFX_PLAY_DUMMY_BACKGROUND_SOUND()
 #define GFX_OPEN_SOUND_EFFECTS_MIDI(a, b, c, d)
@@ -158,14 +168,14 @@ typedef enum TEXTURES {
 #define gui_cancel_timer(x)
 #define gui_start_timer(x, y)
 #define gdi_layer_free(x)
+#define gdi_layer_set_active(x)
 #define gdi_layer_multi_layer_disable()
 #define gdi_layer_multi_layer_enable()
 #define gdi_layer_get_base_handle(x)
 #define gdi_layer_create(a, b, c, d, e)
 #define gdi_layer_set_source_key(x, y)
 #define gdi_layer_flatten_to_base(a, b, c, d)
-#define gdi_layer_blt(a, b, c, d, e, f, g, h) // TODO: Blitter.
-#define GoBackHistory() // TODO: idk what this.
+#define gdi_layer_blt(a, b, c, d, e, f, g, h) // Blitter function.
 #define wgui_register_pen_down_handler(x)
 #define wgui_register_pen_up_handler(x)
 #define wgui_register_pen_move_handler(x)
@@ -180,7 +190,6 @@ extern void gdi_layer_push_clip(void);
 extern void gdi_layer_pop_clip(void);
 extern void gdi_layer_set_clip(S32 x, S32 y, S32 w, S32 h);
 extern void gdi_layer_clear_background(U32 c);
-extern void gdi_layer_set_active(gdi_handle layer);
 
 extern void gdi_image_draw_id(S32 x, S32 y, TEXTURE texture_id);
 extern void gdi_draw_solid_rect(S32 x, S32 y, S32 w, S32 h, U32 c);
@@ -196,6 +205,8 @@ extern void mmi_gx_magicsushi_key_8_release(void);
 extern void mmi_gx_magicsushi_pen_down_hdlr(mmi_pen_point_struct pos);
 extern void mmi_gx_magicsushi_pen_up_hdlr(mmi_pen_point_struct pos);
 extern void mmi_gx_magicsushi_pen_move_hdlr(mmi_pen_point_struct pos);
+
+extern void GoBackHistory(void); // Looks like exit/quit application function.
 
 /* ================================================================================================================== */
 

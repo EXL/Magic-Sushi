@@ -9,6 +9,7 @@
  *   MIT
  *
  * History:
+ *   17-Sep-2022: Implemented Game Over screen.
  *   16-Sep-2022: Implemented engine + shell concept.
  *   15-Sep-2022: Created initial draft/demo version.
  *
@@ -33,8 +34,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
-
-#include <stdio.h>
 
 #include <time.h>
 
@@ -282,19 +281,19 @@ static void main_loop_step(SDL_Texture *texture) {
 /* ==================================================== STUBS ======================================================= */
 
 void GFX_PLAY_SOUND_EFFECTS_MIDI(S32 music_id) {
-	fprintf(stderr, "ENTER: GFX_PLAY_SOUND_EFFECTS_MIDI: %d.\n", music_id);
+	D("ENTER: %s: %d.\n", __func__, music_id);
 	if (music_latest != MUSIC_GAMEOVER) {
 		Sound_Play(music_id, 0);
 	}
 }
 
 void GFX_STOP_SOUND_EFFECTS_MIDI(S32 music_id) {
-	fprintf(stderr, "ENTER: GFX_STOP_SOUND_EFFECTS_MIDI: %d.\n", music_id);
-//	Mix_HaltMusic();
+	D("ENTER: %s: %d.\n", __func__, music_id);
+//	Mix_HaltChannel(MIX_SFX_CHANNEL);
 }
 
 void GFX_PLAY_BACKGROUND_SOUND(S32 music_id) {
-	fprintf(stderr, "ENTER: GFX_PLAY_BACKGROUND_SOUND: %d.\n", music_id);
+	D("ENTER: %s: %d.\n", __func__, music_id);
 	if (music_id == MUSIC_BACKGROUND)
 		Music_Play(music_id, -1);
 	else if (music_id == MUSIC_GAMEOVER)
@@ -302,23 +301,23 @@ void GFX_PLAY_BACKGROUND_SOUND(S32 music_id) {
 }
 
 void GFX_STOP_BACKGROUND_SOUND(S32 music_id) {
-	fprintf(stderr, "ENTER: GFX_STOP_BACKGROUND_SOUND %d.\n", music_id);
+	D("ENTER: %s: %d.\n", __func__, music_id);
 //	Mix_HaltMusic();
 }
 
 void mmi_gfx_draw_gameover_screen(S32 gameover_id, S32 field_id, S32 pic_id, U16 grade) {
-	fprintf(stderr, "ENTER: mmi_gfx_draw_gameover_screen: %d %d %d %hu.\n", gameover_id, field_id, pic_id, grade);
-	gdi_layer_clear_background(0);
+	D("ENTER: %s: %d %d %d %hu.\n", __func__, gameover_id, field_id, pic_id, grade);
+
 }
 
 void gdi_layer_push_clip(void) {
-//	fprintf(stderr, "ENTER: gdi_layer_push_clip: %d.\n", sp);
+	D("ENTER: %s: %d.\n", __func__, sp);
 	sp++;
 	SDL_RenderGetClipRect(render, &clip_stack[sp]);
 }
 
 void gdi_layer_pop_clip(void) {
-//	fprintf(stderr, "ENTER: gdi_layer_pop_clip: %d.\n", sp);
+	D("ENTER: %s: %d.\n", __func__, sp);
 	sp--;
 	if (sp < 0)
 		SDL_RenderSetClipRect(render, NULL);
@@ -327,28 +326,25 @@ void gdi_layer_pop_clip(void) {
 }
 
 void gdi_layer_set_clip(S32 x, S32 y, S32 w, S32 h) {
-//	fprintf(stderr, "ENTER: gdi_layer_set_clip %d %d %d %d.\n", x, y, w, h);
+	D("ENTER: %s: %d %d %d %d.\n", __func__, x, y, w, h);
 	SDL_Rect r = { x, y, w - x, h - y };
 	SDL_RenderSetClipRect(render, &r);
 }
 
 void gdi_layer_clear_background(U32 c) {
-//	fprintf(stderr, "ENTER: gdi_layer_clear_background %u.\n", c);
+	D("ENTER: %s: %u.\n", __func__, c);
+	// TODO:!!!
 	SDL_SetRenderDrawColor(render, 255, 255, 255, 0);
 	SDL_RenderClear(render);
 }
 
-void gdi_layer_set_active(gdi_handle layer) {
-//	fprintf(stderr, "ENTER: gdi_layer_set_active.\n");
-}
-
 void gdi_image_draw_id(S32 x, S32 y, TEXTURE texture_id) {
-//	fprintf(stderr, "ENTER: gdi_image_draw_id %d %d %d.\n", x, y, texture_id);
+	D("ENTER: %s: %d %d %d.\n", __func__, x, y, texture_id);
 	Texture_Draw(x, y, texture_id);
 }
 
 void gdi_draw_solid_rect(S32 x, S32 y, S32 w, S32 h, U32 c) {
-//	fprintf(stderr, "ENTER: gdi_draw_solid_rect %d %d %d %d %u.\n", x, y, w, h, c);
+	D("ENTER: %s: %d %d %d %d %u.\n", __func__, x, y, w, h, c);
 	SDL_Rect r = { x, y, w - x, h - y };
 	if (c == GDI_COLOR_TRANSPARENT) {
 		// TODO: Damn! This hack is so ugly. UGLY!!1
@@ -367,6 +363,13 @@ void gdi_draw_solid_rect(S32 x, S32 y, S32 w, S32 h, U32 c) {
 		}
 		SDL_RenderFillRect(render, &r);
 	}
+}
+
+void GoBackHistory(void) {
+	D("ENTER: %s: .\n", __func__);
+#ifndef __EMSCRIPTEN__
+	exit_main_loop = SDL_TRUE;
+#endif
 }
 
 /* ================================================================================================================== */
@@ -434,12 +437,12 @@ int main(SDL_UNUSED int argc, SDL_UNUSED char *argv[]) {
 #ifndef __EMSCRIPTEN__
 	while (!exit_main_loop) {
 		main_loop_step(textures[TEXTURE_SCREEN]);
-		SDL_Delay(FPS_COUNTER); // ~10 fps.
+		SDL_Delay(FPS_COUNTER); // ~10 FPS.
 	}
 #else
 	CONTEXT_EMSCRIPTEN context;
 	context.texture = textures[TEXTURE_SCREEN];
-	emscripten_set_main_loop_arg(main_loop_emscripten, &context, 10, 1); // 10 fps.
+	emscripten_set_main_loop_arg(main_loop_emscripten, &context, FPS_EMSCRIPTEN_COUNTER, 1); // 10 FPS.
 #endif
 
 	Mix_CloseAudio();
