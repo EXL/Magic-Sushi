@@ -53,9 +53,10 @@ Install [MSYS2](https://www.msys2.org/) first and run "MSYS2 MINGW64" shell.
 
 ```sh
 $ pacman -S mingw-w64-x86_64-make mingw-w64-x86_64-gcc
+$ pacman -S mingw-w64-x86_64-SDL mingw-w64-x86_64-SDL_mixer mingw-w64-x86_64-SDL_image
 $ pacman -S mingw-w64-x86_64-SDL2 mingw-w64-x86_64-SDL2_mixer mingw-w64-x86_64-SDL2_image
 $ mingw32-make build-sdl1-windows
-$ mingw32-make build-sdl1-windows-static # Alternative, maybe broken over time.
+$ mingw32-make build-sdl1-windows-static # Alternative, maybe broken over time, like now.
 $ mingw32-make build-sdl2-windows
 $ mingw32-make build-sdl2-windows-static # Alternative, maybe broken over time.
 ```

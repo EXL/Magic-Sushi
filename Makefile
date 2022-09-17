@@ -1,3 +1,6 @@
+# This Makefile was created by EXL: 15-Sep-2022
+# Edited: 18-Sep-2022 (add windows support using MSYS2)
+
 # RESOLUTION = -D_240x320
 RESOLUTION = -D_320x480
 
@@ -30,10 +33,40 @@ build-sdl1-ezx:
                `sdl-config --cflags --libs` -lSDL_image -lSDL_mixer
 	arm-linux-gnu-strip -s Magic-Sushi-EZX
 
+build-sdl1-windows:
+	windres -i Windows/Magic-Sushi.rc -o Magic-Sushi_res.o --include-dir=.
+	$(CC) ${RESOLUTION} -O2 Magic-Sushi-Engine.c Magic-Sushi-SDL1.c -o Magic-Sushi-SDL1.exe \
+		Magic-Sushi_res.o `sdl-config --cflags --libs` -lSDL_image -lSDL_mixer
+	strip -s Magic-Sushi-SDL1.exe
+
+build-sdl1-windows-static:
+	windres -i Windows/Magic-Sushi.rc -o Magic-Sushi_res.o --include-dir=.
+	$(CC) -static -static-libgcc ${RESOLUTION} -O2 Magic-Sushi-Engine.c Magic-Sushi-SDL1.c -o Magic-Sushi-SDL1.exe \
+		Magic-Sushi_res.o -lSDL_image -lSDL_mixer -lmad `sdl-config --cflags --static-libs` -ltiff \
+		-lzstd -ldeflate -lwebp -lpng -lz -ljpeg -llzma -ljbig -llerc -lstdc++ -lvorbisfile -lvorbis -logg
+	strip -s Magic-Sushi-SDL1.exe
+
+build-sdl2-windows:
+	windres -i Windows/Magic-Sushi.rc -o Magic-Sushi_res.o --include-dir=.
+	$(CC) ${RESOLUTION} -O2 Magic-Sushi-Engine.c Magic-Sushi-SDL2.c -o Magic-Sushi-SDL2.exe \
+		Magic-Sushi_res.o `sdl2-config --cflags --libs` -lSDL2_image -lSDL2_mixer
+	strip -s Magic-Sushi-SDL2.exe
+
+build-sdl2-windows-static:
+	windres -i Windows/Magic-Sushi.rc -o Magic-Sushi_res.o --include-dir=.
+	$(CC) -static -static-libgcc ${RESOLUTION} -O2 Magic-Sushi-Engine.c Magic-Sushi-SDL2.c -o Magic-Sushi-SDL2.exe \
+		Magic-Sushi_res.o `sdl2-config --cflags --static-libs` -lSDL2_image -ltiff -lwebp -ljpeg -llzma -ljbig -llerc \
+		-ljxl -lhwy -lzstd -lbrotlidec -lbrotlicommon -ldeflate -lpng -lz -lstdc++ \
+		-lSDL2_mixer -lwinmm -lmpg123 -lopusfile -logg -lopus -lshlwapi -lssp
+	strip -s Magic-Sushi-SDL2.exe
+
 clean:
+	-rm -f Magic-Sushi_res.o
 	-rm -f Magic-Sushi-EZX
 	-rm -f Magic-Sushi-SDL1
 	-rm -f Magic-Sushi-SDL2
+	-rm -f Magic-Sushi-SDL1.exe
+	-rm -f Magic-Sushi-SDL2.exe
 	-rm -f Magic-Sushi.data
 	-rm -f Magic-Sushi.html
 	-rm -f Magic-Sushi.js

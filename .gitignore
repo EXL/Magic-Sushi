@@ -1,6 +1,9 @@
 *.pkg
 *.mpkg
 *.user
+*.exe
+*.o
+*.obj
 Magic-Sushi-EZX
 Magic-Sushi-SDL1
 Magic-Sushi-SDL2
