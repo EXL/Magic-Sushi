@@ -1,11 +1,7 @@
-Assets
-Assets320
-Assets480
-Audio
-Trash
-Original-Leaked
-Qt-Creator-Project
+*.pkg
+*.mpkg
 *.user
+Magic-Sushi-EZX
 Magic-Sushi-SDL1
 Magic-Sushi-SDL2
 Magic-Sushi.data
