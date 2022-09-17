@@ -46,11 +46,10 @@ static Mix_Chunk *sound_effects[SOUND_MAX] = { NULL };
 static SDL_bool is_channel_playing = SDL_FALSE;
 static Sint32 volume_channel_old = -1;
 
+static SDL_Renderer *render = NULL;
 static SDL_Texture *textures[TEXTURE_MAX] = { NULL };
 
 static SDL_bool exit_main_loop = SDL_FALSE;
-static SDL_Renderer *render = NULL;
-
 static SDL_Rect clip_stack[10] = { { 0, 0, 0, 0} };
 static Sint32 sp = -1;
 
@@ -99,7 +98,7 @@ static void Music_Sound_Unload(void) {
 static void Texture_Create_Bitmap(const char *filepath, TEXTURE texture_id) {
 	SDL_Surface *bitmap = IMG_Load(filepath);
 	if (bitmap == NULL)
-		fprintf(stderr, "WARNING: Cannot open '%s' file!\n", filepath);
+		E("WARNING: Cannot open '%s' file!\n", filepath);
 	textures[texture_id] = SDL_CreateTextureFromSurface(render, bitmap);
 	SDL_FreeSurface(bitmap);
 }
@@ -247,50 +246,6 @@ static void key_handler(S32 key, EVENT keydown) {
 	}
 }
 
-static void main_loop_step(SDL_Texture *texture) {
-	SDL_Event event;
-	while (SDL_PollEvent(&event)) {
-		switch (event.type) {
-			case SDL_QUIT:
-				exit_main_loop = SDL_TRUE;
-				break;
-			case SDL_KEYDOWN:
-				key_handler(event.key.keysym.sym, KEY_EVENT_DOWN);
-				break;
-			case SDL_KEYUP:
-				key_handler(event.key.keysym.sym, KEY_EVENT_UP);
-				break;
-			case SDL_MOUSEMOTION:
-				mouse_motion_handler(event.motion);
-				break;
-			case SDL_MOUSEBUTTONDOWN:
-				mouse_handler(event.button, MOUSE_EVENT_DOWN);
-				break;
-			case SDL_MOUSEBUTTONUP:
-				mouse_handler(event.button, MOUSE_EVENT_UP);
-				break;
-		}
-	}
-
-	is_channel_playing = Mix_Playing(MIX_SFX_CHANNEL);
-	if (!is_channel_playing && !is_music_playing && (music_latest == MUSIC_BACKGROUND)) {
-		is_music_playing = SDL_TRUE;
-		Mix_PlayMusic(music_tracks[music_latest], -1);
-	}
-	SDL_SetRenderTarget(render, texture);
-
-	mmi_gx_magicsushi_cyclic_timer();
-
-	SDL_SetRenderTarget(render, NULL);
-	SDL_Rect rectangle;
-	rectangle.x = 0;
-	rectangle.y = 0;
-	rectangle.w = WINDOW_WIDTH;
-	rectangle.h = WINDOW_HEIGHT;
-	SDL_RenderCopy(render, texture, &rectangle, NULL);
-	SDL_RenderPresent(render);
-}
-
 static void Set_Color(U32 c) {
 	switch (c) {
 		default:
@@ -415,6 +370,50 @@ void GoBackHistory(void) {
 
 /* ================================================================================================================== */
 
+static void main_loop_step(SDL_Texture *texture) {
+	SDL_Event event;
+	while (SDL_PollEvent(&event)) {
+		switch (event.type) {
+			case SDL_QUIT:
+				exit_main_loop = SDL_TRUE;
+				break;
+			case SDL_KEYDOWN:
+				key_handler(event.key.keysym.sym, KEY_EVENT_DOWN);
+				break;
+			case SDL_KEYUP:
+				key_handler(event.key.keysym.sym, KEY_EVENT_UP);
+				break;
+			case SDL_MOUSEMOTION:
+				mouse_motion_handler(event.motion);
+				break;
+			case SDL_MOUSEBUTTONDOWN:
+				mouse_handler(event.button, MOUSE_EVENT_DOWN);
+				break;
+			case SDL_MOUSEBUTTONUP:
+				mouse_handler(event.button, MOUSE_EVENT_UP);
+				break;
+		}
+	}
+
+	is_channel_playing = Mix_Playing(MIX_SFX_CHANNEL);
+	if (!is_channel_playing && !is_music_playing && (music_latest == MUSIC_BACKGROUND)) {
+		is_music_playing = SDL_TRUE;
+		Mix_PlayMusic(music_tracks[music_latest], -1);
+	}
+	SDL_SetRenderTarget(render, texture);
+
+	mmi_gx_magicsushi_cyclic_timer();
+
+	SDL_SetRenderTarget(render, NULL);
+	SDL_Rect rectangle;
+	rectangle.x = 0;
+	rectangle.y = 0;
+	rectangle.w = WINDOW_WIDTH;
+	rectangle.h = WINDOW_HEIGHT;
+	SDL_RenderCopy(render, texture, &rectangle, NULL);
+	SDL_RenderPresent(render);
+}
+
 #ifdef __EMSCRIPTEN__
 static void main_loop_emscripten(void *arguments) {
 	CONTEXT_EMSCRIPTEN *context = arguments;
@@ -426,20 +425,20 @@ int main(SDL_UNUSED int argc, SDL_UNUSED char *argv[]) {
 	srand(time(0));
 
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
-		fprintf(stderr, "SDL_Init Error: %s.\n", SDL_GetError());
+		E("SDL_Init error: %s.\n", SDL_GetError());
 		return EXIT_FAILURE;
 	}
 
 	SDL_Window *window = SDL_CreateWindow("Magic Sushi",
 		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
 	if (window == NULL) {
-		fprintf(stderr, "SDL_CreateWindow Error: %s.\n", SDL_GetError());
+		E("SDL_CreateWindow error: %s.\n", SDL_GetError());
 		return EXIT_FAILURE;
 	}
 
 	SDL_Surface *icon = SDL_LoadBMP("Assets/gx_magicsushi_icon.bmp");
 	if (icon == NULL)
-		fprintf(stderr, "SDL_LoadBMP Error: %s.\n", SDL_GetError());
+		E("SDL_LoadBMP error: %s.\n", SDL_GetError());
 	else {
 		SDL_SetColorKey(icon, SDL_TRUE, SDL_MapRGB(icon->format, 128, 255, 128)); // Icon transparent mask.
 		SDL_SetWindowIcon(window, icon);
@@ -448,7 +447,7 @@ int main(SDL_UNUSED int argc, SDL_UNUSED char *argv[]) {
 
 	render = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
 	if (render == NULL) {
-		fprintf(stderr, "SDL_CreateRenderer Error: %s.\n", SDL_GetError());
+		E("SDL_CreateRenderer error: %s.\n", SDL_GetError());
 		SDL_DestroyWindow(window);
 		SDL_Quit();
 		return EXIT_FAILURE;
@@ -458,11 +457,11 @@ int main(SDL_UNUSED int argc, SDL_UNUSED char *argv[]) {
 
 	int result = Mix_Init(MIX_INIT_OGG);
 	if (result != MIX_INIT_OGG) {
-		fprintf(stderr, "Mix_Init Error: %s.\n", Mix_GetError());
+		E("Mix_Init error: %s.\n", Mix_GetError());
 		return EXIT_FAILURE;
 	}
 	if (Mix_OpenAudio(44100, AUDIO_S16SYS, 1, 4096) == -1) {
-		fprintf(stderr, "Mix_OpenAudio Error: %s.\n", Mix_GetError());
+		E("Mix_OpenAudio error: %s.\n", Mix_GetError());
 		return EXIT_FAILURE;
 	}
 
