@@ -26,7 +26,7 @@ build-sdl2-web:
 	emstrip -s Magic-Sushi.wasm
 
 build-sdl1-ezx:
-	arm-linux-gnu-gcc -D_240x320 -O2 Magic-Sushi-Engine.c Magic-Sushi-SDL1.c -o Magic-Sushi-EZX \
+	arm-linux-gnu-gcc -D_240x320 -D_EZX -O2 Magic-Sushi-Engine.c Magic-Sushi-SDL1.c -o Magic-Sushi-EZX \
                `sdl-config --cflags --libs` -lSDL_image -lSDL_mixer
 	arm-linux-gnu-strip -s Magic-Sushi-EZX
 
