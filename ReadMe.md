@@ -82,7 +82,7 @@ $ make build-sdl2-web
 
 ## Build for EZX
 
-Install [Motorola EZX SDK](TODO: Link) first.
+Install [Motorola EZX SDK](https://TODO) first.
 
 ```sh
 $ source /opt/toolchains/motoezx/setenv-a1200.sh
