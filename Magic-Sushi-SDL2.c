@@ -16,6 +16,10 @@
  *   $ clear && clear && gcc Magic-Sushi-SDL2.c Magic-Sushi-Engine.c -o Magic-Sushi-SDL2 \
  *       -lSDL2 -lSDL2_image -lSDL2_mixer && strip -s Magic-Sushi-SDL2 && ./Magic-Sushi-SDL2
  *
+ * Convert DVI (IMA) ADPCM to WAVs and then OGGs:
+ *   $ sox *.ima -e signed-integer *.wav
+ *   $ ffmpeg -i *.wav -c:a libvorbis -ar 44100 -ac 1 -b:a 64k *.ogg
+ *
  * More information:
  *   https://www.youtube.com/watch?v=Mmv73Kck6Co
  */
@@ -73,11 +77,13 @@ static void Music_Play(MUSIC_TRACK track, Sint32 loop) {
 }
 
 static void Sound_Play(SOUND_EFFECT track, Sint32 loop) {
-	is_channel_playing = SDL_TRUE;
-	is_music_playing = SDL_FALSE;
-	Mix_HaltMusic();
-	if (Mix_Playing(MIX_SFX_CHANNEL))
-		Mix_HaltChannel(MIX_SFX_CHANNEL);
+	if (track != SOUND_SELECT) {
+		is_channel_playing = SDL_TRUE;
+		is_music_playing = SDL_FALSE;
+		Mix_HaltMusic();
+		if (Mix_Playing(MIX_SFX_CHANNEL))
+			Mix_HaltChannel(MIX_SFX_CHANNEL);
+	}
 	Mix_PlayChannel(MIX_SFX_CHANNEL, sound_effects[track], loop);
 }
 
