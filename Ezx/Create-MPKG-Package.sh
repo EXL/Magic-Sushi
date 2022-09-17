@@ -6,14 +6,15 @@ rm -Rf Magic-Sushi
 rm -Rf *.pkg
 rm -Rf *.mpkg
 
-mkdir Magic-Sushi
+mkdir -p Magic-Sushi/Assets
 
-cp -R ../Assets Magic-Sushi
+cp -R ../Assets320/* Magic-Sushi/Assets
 cp ../Magic-Sushi-EZX Magic-Sushi
 
 cp Magic-Sushi.desktop Magic-Sushi
-cp ../Images/Icons/Magic-Sushi-EZX-IconBig.png Magic-Sushi
-cp ../Images/Icons/Magic-Sushi-EZX-IconSmall.png Magic-Sushi
+cp run.sh Magic-Sushi
+cp ../Images/Icons/Magic-Sushi-EZX-IconBig.png Magic-Sushi/IconBig.png
+cp ../Images/Icons/Magic-Sushi-EZX-IconSmall.png Magic-Sushi/IconSmall.png
 
 tar --numeric-owner --owner=2000 --group=233 -cvf Magic-Sushi.uncompressed Magic-Sushi
 gzip -9f Magic-Sushi.uncompressed
