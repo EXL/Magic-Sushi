@@ -43,8 +43,7 @@
 #define MIX_SFX_CHANNEL                                (-1)
 
 #define __align(x)
-#define gdi_handle void * // TODO: Fix that
-//#define gdi_act_color_from_rgb(a, r, g, b) { a, r, g, b }
+#define gdi_handle void *
 
 #define FALSE 0
 #define TRUE 1
@@ -59,37 +58,35 @@ typedef int16_t S16;
 typedef uint16_t U16;
 typedef int32_t S32;
 typedef uint32_t U32;
-typedef float FLOAT; // TODO: maybe double?
+typedef float FLOAT;
 
 typedef struct {
 	S32 x;
 	S32 y;
 } mmi_pen_point_struct;
 
-//typedef struct {
-//	U8 a;
-//	U8 r;
-//	U8 g;
-//	U8 b;
-//} gdi_color;
+typedef enum COLORS {
+	GDI_COLOR_TRANSPARENT,
+	GDI_COLOR_GREEN,
+	GDI_COLOR_RED,
+	GDI_COLOR_BLUE,
+	bg_color,
+	fg_color
+} COLOR;
 
-#define GDI_COLOR_TRANSPARENT 0
-#define GDI_COLOR_GREEN 1
-#define GDI_COLOR_RED 2
-#define GDI_COLOR_BLUE 3
-#define bg_color 4
-
-#define KEY_5 5
-#define KEY_IP 5
-#define KEY_2 2
-#define KEY_UP_ARROW 2
-#define KEY_8 8
-#define KEY_DOWN_ARROW 8
-#define KEY_4 4
-#define KEY_LEFT_ARROW 4
-#define KEY_6 6
-#define KEY_RIGHT_ARROW 6
-#define KEY_RSK 11
+typedef enum KEYS {
+	KEY_5,
+	KEY_IP,
+	KEY_2,
+	KEY_UP_ARROW,
+	KEY_8,
+	KEY_DOWN_ARROW,
+	KEY_4,
+	KEY_LEFT_ARROW,
+	KEY_6,
+	KEY_RIGHT_ARROW,
+	KEY_RSK
+} KEY;
 
 typedef enum EVENTS {
 	KEY_EVENT_UP,
@@ -145,7 +142,6 @@ typedef enum TEXTURES {
 	IMG_ID_GX_MAGICSUSHI_UP,                 // OK
 	IMG_ID_GX_MAGICSUSHI_GRADEMAP,           // OK
 	IMG_ID_GX_MAGICSUSHI_GOPIC,              // OK
-	IMG_ID_GX_MAGICSUSHI_LOADING,            // OK, Custom screen.
 	TEXTURE_SCREEN,                          // OK
 	TEXTURE_MAX
 } TEXTURE;
@@ -205,6 +201,7 @@ extern void mmi_gx_magicsushi_key_8_release(void);
 extern void mmi_gx_magicsushi_pen_down_hdlr(mmi_pen_point_struct pos);
 extern void mmi_gx_magicsushi_pen_up_hdlr(mmi_pen_point_struct pos);
 extern void mmi_gx_magicsushi_pen_move_hdlr(mmi_pen_point_struct pos);
+extern void mmi_gx_magicsushi_draw_digit(S16 x, S16 y, U32 digit);
 
 extern void GoBackHistory(void); // Looks like exit/quit application function.
 

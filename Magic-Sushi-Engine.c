@@ -781,6 +781,24 @@ void mmi_gx_magicsushi_enter_gfx(void)
     mmi_gfx_entry_menu_screen();
 }
 
+void mmi_gx_magicsushi_draw_digit(S16 x, S16 y, U32 digit) {
+    S16 tmp_digit;
+    S16 tmp_grade;
+    S16 position_x;
+    position_x = x;
+    tmp_grade = digit;
+    do
+    {
+        tmp_digit = tmp_grade % 10;
+        tmp_grade = tmp_grade / 10;
+
+        gdi_image_draw_id(
+            position_x,
+            y,
+            (U16) (IMG_ID_GX_MAGICSUSHI_NUMBER_0 + tmp_digit));
+        position_x = position_x - MMI_GX_MAGICSUSHI_DIGIT_WIDTH;
+    } while (tmp_grade > 0);
+}
 
 /*****************************************************************************
  * FUNCTION
@@ -797,8 +815,6 @@ void mmi_gx_magicsushi_draw_dynamic_background(void)
     /*----------------------------------------------------------------*/
     /* Local Variables                                                */
     /*----------------------------------------------------------------*/
-    S16 tmp_digit;
-    S16 tmp_grade;
     S16 position_x;
     FLOAT tmp;
     FLOAT tmpfloat;
@@ -819,36 +835,11 @@ void mmi_gx_magicsushi_draw_dynamic_background(void)
         MMI_GX_MAGICSUSHI_BACKGROUND1_Y2,
         GDI_COLOR_TRANSPARENT);
 
-    /* draw score */
-    position_x = MMI_GX_MAGICSUSHI_SCORE_POSITION_X;
-    tmp_grade = g_gx_magicsushi_context.game_grade;
-    do
-    {
-        tmp_digit = tmp_grade % 10;
-        tmp_grade = tmp_grade / 10;
+    mmi_gx_magicsushi_draw_digit(MMI_GX_MAGICSUSHI_SCORE_POSITION_X,
+        MMI_GX_MAGICSUSHI_SCORE_POSITION_Y, g_gx_magicsushi_context.game_grade);
 
-        gdi_image_draw_id(
-            position_x,
-            MMI_GX_MAGICSUSHI_SCORE_POSITION_Y,
-            (U16) (IMG_ID_GX_MAGICSUSHI_NUMBER_0 + tmp_digit));
-        position_x = position_x - MMI_GX_MAGICSUSHI_DIGIT_WIDTH;
-    } while (tmp_grade > 0);
-
-    /* draw_level */
-    position_x = MMI_GX_MAGICSUSHI_LEVEL_POSITION_X;
-    tmp_grade = g_gx_magicsushi_context.level;
-
-    do
-    {
-        tmp_digit = tmp_grade % 10;
-        tmp_grade = tmp_grade / 10;
-
-        gdi_image_draw_id(
-            position_x,
-            MMI_GX_MAGICSUSHI_LEVEL_POSITION_Y,
-            (U16) (IMG_ID_GX_MAGICSUSHI_NUMBER_0 + tmp_digit));
-        position_x = position_x - MMI_GX_MAGICSUSHI_DIGIT_WIDTH;
-    } while (tmp_grade > 0);
+    mmi_gx_magicsushi_draw_digit(MMI_GX_MAGICSUSHI_LEVEL_POSITION_X,
+        MMI_GX_MAGICSUSHI_LEVEL_POSITION_Y, g_gx_magicsushi_context.level);
 
     gdi_layer_pop_clip();
     gdi_layer_push_clip();
@@ -1568,7 +1559,10 @@ void mmi_gx_magicsushi_pen_up_hdlr(mmi_pen_point_struct pos)
         && pos_y > MMI_GX_MAGICSUSHI_SOFTKEY_Y &&
         pos_y < MMI_GX_MAGICSUSHI_SOFTKEY_Y + MMI_GX_MAGICSUSHI_SOFTKEY_HEIGHT)
     {
-        GoBackHistory();
+#ifdef FIX_GAMEOVER_HACK
+        if (game_over_count_down == 10)
+#endif
+            GoBackHistory();
     }
 }
 

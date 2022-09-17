@@ -151,9 +151,15 @@ static void Texture_Draw(Sint32 x, Sint32 y, TEXTURE texture_id) {
 	SDL_RenderCopy(render, textures[texture_id], NULL, &r);
 }
 
-static void Texture_Draw_Piece(Sint32 x, Sint32 y, Sint32 w, Sint32 h, TEXTURE texture_id) {
+static void Texture_Draw_Back(Sint32 x, Sint32 y, Sint32 w, Sint32 h, TEXTURE texture_id) {
 	SDL_Rect r = { x, y, w - x, h - y};
 	SDL_RenderCopy(render, textures[texture_id], &r, &r);
+}
+
+static void Texture_Draw_Piece(Sint32 x, Sint32 y, Sint32 w, Sint32 h, Sint32 xx, Sint32 yy, TEXTURE texture_id) {
+	SDL_Rect r = { x, y, w - x, h - y};
+	SDL_Rect d = { xx, yy, r.w, r.h };
+	SDL_RenderCopy(render, textures[texture_id], &r, &d);
 }
 
 static void Texture_Unload(void) {
@@ -278,6 +284,29 @@ static void main_loop_step(SDL_Texture *texture) {
 	SDL_RenderPresent(render);
 }
 
+static void Set_Color(U32 c) {
+	switch (c) {
+		default:
+			SDL_SetRenderDrawColor(render, 255, 255, 255, 0);
+			break;
+		case bg_color:
+			SDL_SetRenderDrawColor(render, 255, 244, 212, 0);
+			break;
+		case fg_color:
+			SDL_SetRenderDrawColor(render, 255, 189, 8, 0);
+			break;
+		case GDI_COLOR_RED:
+			SDL_SetRenderDrawColor(render, 255, 0, 0, 0);
+			break;
+		case GDI_COLOR_GREEN:
+			SDL_SetRenderDrawColor(render, 0, 255, 0, 0);
+			break;
+		case GDI_COLOR_BLUE:
+			SDL_SetRenderDrawColor(render, 0, 0, 255, 0);
+			break;
+	}
+}
+
 /* ==================================================== STUBS ======================================================= */
 
 void GFX_PLAY_SOUND_EFFECTS_MIDI(S32 music_id) {
@@ -307,7 +336,23 @@ void GFX_STOP_BACKGROUND_SOUND(S32 music_id) {
 
 void mmi_gfx_draw_gameover_screen(S32 gameover_id, S32 field_id, S32 pic_id, U16 grade) {
 	D("ENTER: %s: %d %d %d %hu.\n", __func__, gameover_id, field_id, pic_id, grade);
-
+#if defined(_320x480)
+	gdi_image_draw_id(83, 80, gameover_id);
+	gdi_image_draw_id(65, 150, field_id);
+	gdi_image_draw_id(65, 240, pic_id);
+	gdi_draw_solid_rect(70, 155, 257, 212, fg_color);
+	Texture_Draw_Piece(16, 45, 58, 63, 123, 175, IMG_ID_GX_MAGICSUSHI_GAME_BACKGROUND);
+	mmi_gx_magicsushi_draw_digit(195, 181, grade);
+#elif defined(_240x320)
+	gdi_image_draw_id(45, 50, gameover_id);
+	gdi_image_draw_id(50, 100, field_id);
+	gdi_image_draw_id(50, 190, pic_id);
+	gdi_draw_solid_rect(55, 105, 187, 162, fg_color);
+	Texture_Draw_Piece(14, 25, 50, 38, 75, 125, IMG_ID_GX_MAGICSUSHI_GAME_BACKGROUND);
+	mmi_gx_magicsushi_draw_digit(155, 127, grade);
+#else
+#error "Unknown screen resolution, please set it here for Game Over screen!"
+#endif
 }
 
 void gdi_layer_push_clip(void) {
@@ -333,8 +378,7 @@ void gdi_layer_set_clip(S32 x, S32 y, S32 w, S32 h) {
 
 void gdi_layer_clear_background(U32 c) {
 	D("ENTER: %s: %u.\n", __func__, c);
-	// TODO:!!!
-	SDL_SetRenderDrawColor(render, 255, 255, 255, 0);
+	Set_Color(c);
 	SDL_RenderClear(render);
 }
 
@@ -348,19 +392,9 @@ void gdi_draw_solid_rect(S32 x, S32 y, S32 w, S32 h, U32 c) {
 	SDL_Rect r = { x, y, w - x, h - y };
 	if (c == GDI_COLOR_TRANSPARENT) {
 		// TODO: Damn! This hack is so ugly. UGLY!!1
-		Texture_Draw_Piece(x - 2, y - 2, w + 2, h + 2, IMG_ID_GX_MAGICSUSHI_GAME_BACKGROUND);
+		Texture_Draw_Back(x - 2, y - 2, w + 2, h + 2, IMG_ID_GX_MAGICSUSHI_GAME_BACKGROUND);
 	} else {
-		switch (c) {
-			case GDI_COLOR_RED:
-				SDL_SetRenderDrawColor(render, 255, 0, 0, 0);
-				break;
-			case GDI_COLOR_GREEN:
-				SDL_SetRenderDrawColor(render, 0, 255, 0, 0);
-				break;
-			case GDI_COLOR_BLUE:
-				SDL_SetRenderDrawColor(render, 0, 0, 255, 0);
-				break;
-		}
+		Set_Color(c);
 		SDL_RenderFillRect(render, &r);
 	}
 }
