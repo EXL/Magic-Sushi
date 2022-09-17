@@ -215,6 +215,9 @@ static void key_handler(S32 key, EVENT keydown) {
 						volume_channel_old = -1;
 					}
 					break;
+				case SDLK_ESCAPE:
+					exit_main_loop = SDL_TRUE;
+					break;
 			}
 			break;
 		case KEY_EVENT_UP:

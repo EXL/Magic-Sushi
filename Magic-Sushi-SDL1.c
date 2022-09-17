@@ -213,6 +213,9 @@ static void key_handler(S32 key, EVENT keydown) {
 						volume_channel_old = -1;
 					}
 					break;
+				case SDLK_ESCAPE:
+					exit_main_loop = SDL_TRUE;
+					break;
 			}
 			break;
 		case KEY_EVENT_UP:
@@ -427,6 +430,13 @@ static void main_loop_step(SDL_Surface *texture) {
 	SDL_BlitSurface(back_screen, NULL, texture, &r);
 	SDL_UpdateRect(texture, r.x, r.y, r.w, r.h);
 }
+
+#ifdef __EMSCRIPTEN__
+static void main_loop_emscripten(void *arguments) {
+	CONTEXT_EMSCRIPTEN *context = arguments;
+	main_loop_step(context->texture);
+}
+#endif
 
 int main(int argc, char *argv[]) {
 	srand(time(0));
