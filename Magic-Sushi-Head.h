@@ -19,6 +19,7 @@
 #else
 #define D(format, ...)
 #endif
+#define E(format, ...) do { fprintf(stderr, format, __VA_ARGS__); } while (0)
 
 #if defined(_240x320)
 #define __MMI_MAINLCD_240X320__
@@ -37,6 +38,7 @@
 #endif
 // #define __MMI_MAINLCD_320X240__
 // #define __MMI_MAINLCD_240X400__
+#define WINDOW_BPP                                     (16)
 
 #define FPS_COUNTER                                    (100) // 100 ms, ~10 FPS.
 #define FPS_EMSCRIPTEN_COUNTER                         (10)  // 10 FPS.
