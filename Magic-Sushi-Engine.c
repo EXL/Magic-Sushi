@@ -605,7 +605,9 @@ typedef struct
     S16 remainder;
     U8 check;
     U8 total_time;
+#ifdef FIX_GAMEOVER_HACK
     S16 remain_time;
+#endif
     U16 tick;
     U8 animation_step;
     U8 animation_mode;
@@ -676,7 +678,9 @@ static U16 mmi_magicsushi_language_index;
 #define MMI_MAGICSUSHI_STRING_COUNT MMI_MAGICSUSHI_STRING_TOTAL
 #endif /* __MMI_GAME_MULTI_LANGUAGE_SUPPORT__ */
 
+#ifdef FIX_GAMEOVER_HACK
 static S16 game_over_count_down;
+#endif
 
 /***************************************************************************** 
 * Local Function
@@ -1927,7 +1931,9 @@ void mmi_gx_magicsushi_enter_game(void)
     /*----------------------------------------------------------------*/
     /* Local Variables                                                */
     /*----------------------------------------------------------------*/
+#ifdef FIX_GAMEOVER_HACK
     game_over_count_down = 10;
+#endif
 
     /*----------------------------------------------------------------*/
     /* Code Body                                                      */
@@ -2597,9 +2603,6 @@ void mmi_gx_magicsushi_gameover(void)
 
     /* call this function to draw gameover screen */
     mmi_gfx_entry_gameover_screen();
-#ifdef FIX_GAMEOVER_HACK
-	mmi_gx_magicsushi_enter_game();
-#endif
 }
 
 
@@ -2635,19 +2638,23 @@ void mmi_gx_magicsushi_cyclic_timer(void)   /* done */
     {
         --g_gx_magicsushi_context.remain_time;
 
-        if (g_gx_magicsushi_context.remain_time < 0)
-        {
-			g_gx_magicsushi_context.is_gameover = TRUE;
-		    g_gx_magicsushi_context.is_new_game = TRUE;
-			game_over_count_down--;
+#ifndef FIX_GAMEOVER_HACK
+        if (g_gx_magicsushi_context.remain_time == 0)
+            mmi_gx_magicsushi_gameover();
+#else
+        if (g_gx_magicsushi_context.remain_time < 0) {
+            g_gx_magicsushi_context.is_gameover = TRUE;
+            g_gx_magicsushi_context.is_new_game = TRUE;
+            game_over_count_down--;
 
-			mmi_gx_magicsushi_draw_gameover();
+            mmi_gx_magicsushi_draw_gameover();
 
-			if (game_over_count_down == 9)
-				GFX_PLAY_BACKGROUND_SOUND(MUSIC_GAMEOVER);
-			if (game_over_count_down <= 0)
-				mmi_gx_magicsushi_enter_game();
+            if (game_over_count_down == 9)
+                GFX_PLAY_BACKGROUND_SOUND(MUSIC_GAMEOVER);
+            if (game_over_count_down <= 0)
+                mmi_gx_magicsushi_enter_game();
         }
+#endif
     }
     if (g_gx_magicsushi_context.is_gameover == FALSE)
     {
