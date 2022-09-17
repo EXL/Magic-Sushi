@@ -18,6 +18,6 @@ cp ../Images/Icons/Magic-Sushi-EZX-IconSmall.png Magic-Sushi/IconSmall.png
 
 tar --numeric-owner --owner=2000 --group=233 -cvf Magic-Sushi.uncompressed Magic-Sushi
 gzip -9f Magic-Sushi.uncompressed
-mv Magic-Sushi.uncompressed.gz Magic-Sushi-EZX_v1.0.0_17-Sep-2022.mpkg
+mv Magic-Sushi.uncompressed.gz Magic-Sushi-EZX_v1.0.0_18-Sep-2022.mpkg
 
 rm -Rf Magic-Sushi
