@@ -17,7 +17,7 @@
  *       -lSDL -lSDL_image -lSDL_mixer && strip -s Magic-Sushi-SDL1 && ./Magic-Sushi-SDL1
  */
 
-#include "Magic-Sushi-Head.h"
+#include "Magic-Sushi-Wrapper.h"
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>

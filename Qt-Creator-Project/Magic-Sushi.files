@@ -1,4 +1,4 @@
 ../Magic-Sushi-SDL1.c
 ../Magic-Sushi-SDL2.c
 ../Magic-Sushi-Engine.c
-../Magic-Sushi-Head.h
+../Magic-Sushi-Wrapper.h

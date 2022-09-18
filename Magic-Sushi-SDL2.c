@@ -25,7 +25,7 @@
  *   https://www.youtube.com/watch?v=Mmv73Kck6Co
  */
 
-#include "Magic-Sushi-Head.h"
+#include "Magic-Sushi-Wrapper.h"
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
