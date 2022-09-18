@@ -48,10 +48,16 @@ static Sint32 volume_channel_old = -1;
 
 static SDL_Renderer *render = NULL;
 static SDL_Texture *textures[TEXTURE_MAX] = { NULL };
+static SDL_Window *window = NULL;
 
 static SDL_bool exit_main_loop = SDL_FALSE;
 static SDL_Rect clip_stack[10] = { { 0, 0, 0, 0} };
 static Sint32 sp = -1;
+
+static Sint32 actual_window_width;
+static Sint32 actual_window_height;
+static float scale_factor_x;
+static float scale_factor_y;
 
 #ifdef __EMSCRIPTEN__
 typedef struct {
@@ -168,8 +174,16 @@ static void Texture_Unload(void) {
 			SDL_DestroyTexture(textures[i]);
 }
 
+static void resize_coords(Sint32 *x, Sint32 *y, Sint32 xx, Sint32 yy) {
+	*x = (actual_window_width == WINDOW_WIDTH) ? xx : (Sint32) (xx / scale_factor_x);
+	*y = (actual_window_width == WINDOW_HEIGHT) ? yy : (Sint32) (yy / scale_factor_y);
+
+	D("Translated mouse coords: %d %d, original: %d %d.\n", *x, *y, xx, yy);
+}
+
 static void mouse_handler(SDL_MouseButtonEvent event, EVENT mouse) {
-	mmi_pen_point_struct pos = { event.x, event.y };
+	mmi_pen_point_struct pos;
+	resize_coords(&pos.x, &pos.y, event.x, event.y);
 	switch (mouse) {
 		case MOUSE_EVENT_DOWN:
 			mmi_gx_magicsushi_pen_down_hdlr(pos);
@@ -183,7 +197,8 @@ static void mouse_handler(SDL_MouseButtonEvent event, EVENT mouse) {
 }
 
 static void mouse_motion_handler(SDL_MouseMotionEvent event) {
-	mmi_pen_point_struct pos = { event.x, event.y };
+	mmi_pen_point_struct pos;
+	resize_coords(&pos.x, &pos.y, event.x, event.y);
 	mmi_gx_magicsushi_pen_move_hdlr(pos);
 }
 
@@ -395,6 +410,16 @@ static void main_loop_step(SDL_Texture *texture) {
 			case SDL_MOUSEBUTTONUP:
 				mouse_handler(event.button, MOUSE_EVENT_UP);
 				break;
+			case SDL_WINDOWEVENT:
+				switch (event.window.event) {
+					case SDL_WINDOWEVENT_SHOWN:
+					case SDL_WINDOWEVENT_RESIZED:
+						SDL_GetWindowSize(window, &actual_window_width, &actual_window_height);
+						scale_factor_x = actual_window_width / (float) WINDOW_WIDTH;
+						scale_factor_y = actual_window_height / (float) WINDOW_HEIGHT;
+						break;
+				}
+				break;
 		}
 	}
 
@@ -432,8 +457,11 @@ int main(SDL_UNUSED int argc, SDL_UNUSED char *argv[]) {
 		return EXIT_FAILURE;
 	}
 
-	SDL_Window *window = SDL_CreateWindow("Magic Sushi",
-		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+
+	window = SDL_CreateWindow("Magic Sushi",
+		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT,
+		SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 	if (window == NULL) {
 		E("SDL_CreateWindow error: %s.\n", SDL_GetError());
 		return EXIT_FAILURE;
