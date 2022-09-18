@@ -8,7 +8,7 @@ rm -Rf *.mpkg
 
 mkdir -p Magic-Sushi/Assets
 
-cp -R ../Assets320/* Magic-Sushi/Assets
+cp -R ../Assets-320/* Magic-Sushi/Assets
 cp ../Magic-Sushi-EZX Magic-Sushi
 
 cp Magic-Sushi.desktop Magic-Sushi
