@@ -34,6 +34,7 @@ static Sint32 volume_music_old = -1;
 
 static Mix_Chunk *sound_effects[SOUND_MAX] = { NULL };
 static Sint32 volume_channel_old = -1;
+static Sint32 volume_channel_click = -1;
 
 static SDL_Surface *back_screen = NULL;
 static SDL_Surface *textures[TEXTURE_MAX] = { NULL };
@@ -55,9 +56,7 @@ static Uint32 time_since_last_frame = 0;
 #endif
 
 static void Music_Sound_Load(void) {
-#ifndef _EZX
 	sound_effects[SOUND_SELECT] = Mix_LoadWAV("Assets/gx_magicsushi_select.ogg");
-#endif
 	sound_effects[SOUND_MOVE] = Mix_LoadWAV("Assets/gx_magicsushi_move.ogg");
 
 	music_tracks[MUSIC_BACKGROUND] = Mix_LoadMUS("Assets/gx_magicsushi_bgm.ogg");
@@ -190,14 +189,17 @@ static void key_handler(S32 key, EVENT keydown) {
 				case SDLK_m:
 				case SDLK_7:
 				case SDLK_KP7:
-					if (volume_music_old == -1 && volume_channel_old == -1) {
+					if (volume_music_old == -1 && volume_channel_old == -1 && volume_channel_click == -1) {
 						volume_music_old = Mix_VolumeMusic(0);
 						volume_channel_old = Mix_Volume(MIX_SFX_CHANNEL, 0);
+						volume_channel_click = Mix_VolumeChunk(sound_effects[SOUND_SELECT], 0);
 					} else {
 						Mix_VolumeMusic(volume_music_old);
 						Mix_Volume(MIX_SFX_CHANNEL, volume_channel_old);
+						Mix_VolumeChunk(sound_effects[SOUND_SELECT], volume_channel_click);
 						volume_music_old = -1;
 						volume_channel_old = -1;
+						volume_channel_click = -1;
 					}
 					break;
 				case SDLK_ESCAPE:
@@ -460,8 +462,9 @@ int main(int argc, char *argv[]) {
 		return EXIT_FAILURE;
 	}
 	Music_Sound_Load();
-	volume_music_old = Mix_VolumeMusic(SDL_MIX_MAXVOLUME / 2);
-	volume_channel_old = Mix_Volume(MIX_SFX_CHANNEL, SDL_MIX_MAXVOLUME);
+	Mix_VolumeMusic(SDL_MIX_MAXVOLUME / 2);
+	Mix_VolumeChunk(sound_effects[SOUND_SELECT], SDL_MIX_MAXVOLUME / 2);
+	Mix_Volume(MIX_SFX_CHANNEL, SDL_MIX_MAXVOLUME);
 
 	mmi_gx_magicsushi_enter_game();
 
