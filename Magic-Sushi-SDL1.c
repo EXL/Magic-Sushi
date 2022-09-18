@@ -55,11 +55,12 @@ static Uint32 time_since_last_frame = 0;
 #endif
 
 static void Music_Sound_Load(void) {
-//#ifndef _EZX
-	music_tracks[MUSIC_BACKGROUND] = Mix_LoadMUS("Assets/gx_magicsushi_bgm.ogg");
+#ifndef _EZX
 	sound_effects[SOUND_SELECT] = Mix_LoadWAV("Assets/gx_magicsushi_select.ogg");
-//#endif
+#endif
 	sound_effects[SOUND_MOVE] = Mix_LoadWAV("Assets/gx_magicsushi_move.ogg");
+
+	music_tracks[MUSIC_BACKGROUND] = Mix_LoadMUS("Assets/gx_magicsushi_bgm.ogg");
 	music_tracks[MUSIC_GAMEOVER] = Mix_LoadMUS("Assets/gx_magicsushi_timeout.ogg");
 }
 

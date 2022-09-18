@@ -476,8 +476,8 @@ int main(SDL_UNUSED int argc, SDL_UNUSED char *argv[]) {
 		return EXIT_FAILURE;
 	}
 	Music_Sound_Load();
-	volume_music_old = Mix_VolumeMusic(SDL_MIX_MAXVOLUME / 2);
-	volume_channel_old = Mix_Volume(MIX_SFX_CHANNEL, SDL_MIX_MAXVOLUME);
+	Mix_VolumeMusic(SDL_MIX_MAXVOLUME / 2);
+	Mix_Volume(MIX_SFX_CHANNEL, SDL_MIX_MAXVOLUME);
 
 	SDL_SetRenderTarget(render, textures[TEXTURE_SCREEN]);
 	SDL_RenderClear(render);
