@@ -2599,6 +2599,9 @@ void mmi_gx_magicsushi_gameover(void)
     mmi_gfx_entry_gameover_screen();
 }
 
+BOOL mmi_gx_magicsushi_on_gameover_screen(void) {
+	return g_gx_magicsushi_context.is_gameover == TRUE;
+}
 
 /*****************************************************************************
  * FUNCTION

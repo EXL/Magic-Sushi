@@ -30,12 +30,9 @@
 #include <time.h>
 
 static Mix_Music *music_tracks[MUSIC_MAX] = { NULL };
-static SDL_bool is_music_playing = SDL_FALSE;
 static Sint32 volume_music_old = -1;
-static MUSIC_TRACK music_latest = 0;
 
 static Mix_Chunk *sound_effects[SOUND_MAX] = { NULL };
-static SDL_bool is_channel_playing = SDL_FALSE;
 static Sint32 volume_channel_old = -1;
 
 static SDL_Surface *back_screen = NULL;
@@ -58,30 +55,19 @@ static Uint32 time_since_last_frame = 0;
 #endif
 
 static void Music_Sound_Load(void) {
-#ifndef _EZX
+//#ifndef _EZX
 	music_tracks[MUSIC_BACKGROUND] = Mix_LoadMUS("Assets/gx_magicsushi_bgm.ogg");
 	sound_effects[SOUND_SELECT] = Mix_LoadWAV("Assets/gx_magicsushi_select.ogg");
-#endif
+//#endif
 	sound_effects[SOUND_MOVE] = Mix_LoadWAV("Assets/gx_magicsushi_move.ogg");
-	music_tracks[MUSIC_GAMEOVER] = Mix_LoadMUS("Assets/gx_magicsushi_gameover.ogg");
+	music_tracks[MUSIC_GAMEOVER] = Mix_LoadMUS("Assets/gx_magicsushi_timeout.ogg");
 }
 
 static void Music_Play(MUSIC_TRACK track, Sint32 loop) {
-	is_music_playing = SDL_TRUE;
-	music_latest = track;
-	if (Mix_Playing(MIX_SFX_CHANNEL))
-		Mix_HaltChannel(MIX_SFX_CHANNEL);
 	Mix_PlayMusic(music_tracks[track], loop);
 }
 
 static void Sound_Play(SOUND_EFFECT track, Sint32 loop) {
-	if (track != SOUND_SELECT) {
-		is_channel_playing = SDL_TRUE;
-		is_music_playing = SDL_FALSE;
-		Mix_HaltMusic();
-		if (Mix_Playing(MIX_SFX_CHANNEL))
-			Mix_HaltChannel(MIX_SFX_CHANNEL);
-	}
 	Mix_PlayChannel(MIX_SFX_CHANNEL, sound_effects[track], loop);
 }
 
@@ -277,14 +263,13 @@ static U32 Get_Color(U32 c) {
 
 void GFX_PLAY_SOUND_EFFECTS_MIDI(S32 music_id) {
 	D("ENTER: %s: %d.\n", __func__, music_id);
-	if (music_latest != MUSIC_GAMEOVER) {
+	if (!mmi_gx_magicsushi_on_gameover_screen())
 		Sound_Play(music_id, 0);
-	}
 }
 
 void GFX_STOP_SOUND_EFFECTS_MIDI(S32 music_id) {
 	D("ENTER: %s: %d.\n", __func__, music_id);
-//	Mix_HaltChannel(MIX_SFX_CHANNEL);
+	Mix_HaltChannel(MIX_SFX_CHANNEL);
 }
 
 void GFX_PLAY_BACKGROUND_SOUND(S32 music_id) {
@@ -297,7 +282,7 @@ void GFX_PLAY_BACKGROUND_SOUND(S32 music_id) {
 
 void GFX_STOP_BACKGROUND_SOUND(S32 music_id) {
 	D("ENTER: %s: %d.\n", __func__, music_id);
-//	Mix_HaltMusic();
+	Mix_HaltMusic();
 }
 
 void mmi_gfx_draw_gameover_screen(S32 gameover_id, S32 field_id, S32 pic_id, U16 grade) {
@@ -400,12 +385,6 @@ static void main_loop_step(SDL_Surface *texture) {
 		}
 	}
 
-	is_channel_playing = Mix_Playing(MIX_SFX_CHANNEL);
-	if (!is_channel_playing && !is_music_playing && (music_latest == MUSIC_BACKGROUND)) {
-		is_music_playing = SDL_TRUE;
-		Mix_PlayMusic(music_tracks[music_latest], -1);
-	}
-
 #ifdef _EZX
 	time_b = time_a;
 	time_a = SDL_GetTicks();
@@ -479,8 +458,9 @@ int main(int argc, char *argv[]) {
 		E("Mix_OpenAudio error: %s.\n", Mix_GetError());
 		return EXIT_FAILURE;
 	}
-
 	Music_Sound_Load();
+	volume_music_old = Mix_VolumeMusic(SDL_MIX_MAXVOLUME / 2);
+	volume_channel_old = Mix_Volume(MIX_SFX_CHANNEL, SDL_MIX_MAXVOLUME);
 
 	mmi_gx_magicsushi_enter_game();
 

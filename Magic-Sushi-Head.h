@@ -204,6 +204,7 @@ extern void mmi_gx_magicsushi_pen_down_hdlr(mmi_pen_point_struct pos);
 extern void mmi_gx_magicsushi_pen_up_hdlr(mmi_pen_point_struct pos);
 extern void mmi_gx_magicsushi_pen_move_hdlr(mmi_pen_point_struct pos);
 extern void mmi_gx_magicsushi_draw_digit(S16 x, S16 y, U32 digit);
+extern BOOL mmi_gx_magicsushi_on_gameover_screen(void);
 
 extern void GoBackHistory(void); // Looks like exit/quit application function.
 
