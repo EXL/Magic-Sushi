@@ -357,7 +357,7 @@ void gdi_draw_solid_rect(S32 x, S32 y, S32 w, S32 h, U32 c) {
 	SDL_Rect r = { x, y, w - x, h - y };
 	if (c == GDI_COLOR_TRANSPARENT) {
 		// TODO: Damn! This hack is so ugly. UGLY!!1
-		Texture_Draw_Back(x - 2, y - 2, w + 2, h + 2, IMG_ID_GX_MAGICSUSHI_GAME_BACKGROUND);
+		Texture_Draw_Back(x - 1, y - 1, w + 1, h + 1, IMG_ID_GX_MAGICSUSHI_GAME_BACKGROUND);
 	} else {
 		Set_Color(c);
 		SDL_RenderFillRect(render, &r);
