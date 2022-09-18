@@ -1,5 +1,5 @@
-#ifndef MAGIC_SUSHI_TYPES_H
-#define MAGIC_SUSHI_TYPES_H
+#ifndef MAGIC_SUSHI_WRAPPER_H
+#define MAGIC_SUSHI_WRAPPER_H
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -210,4 +210,4 @@ extern void GoBackHistory(void); // Looks like exit/quit application function.
 
 /* ================================================================================================================== */
 
-#endif /* !MAGIC_SUSHI_TYPES_H */
+#endif /* !MAGIC_SUSHI_WRAPPER_H */
