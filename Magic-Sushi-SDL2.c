@@ -442,7 +442,7 @@ int main(SDL_UNUSED int argc, SDL_UNUSED char *argv[]) {
 #if defined(_WIN32)
 	SDL_SetHint(SDL_HINT_RENDER_DRIVER, "software");
 #endif
-	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
 
 	window = SDL_CreateWindow("Magic Sushi",
 		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT,
