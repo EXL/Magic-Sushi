@@ -1,7 +1,7 @@
 Magic-Sushi
 ===========
 
-![Screenshot from Windows 10](Images/Screenshot-Windows.png)
+![Magic-Sushi game on Motorola ROKR E6](Images/Magic-Sushi-Motorola-ROKR-E6.jpg)
 
 A port of simple puzzle game from MTK OS to SDL1, SDL2 and Emscripten.
 
@@ -21,7 +21,7 @@ Ready-to-run game builds are available in the "[Releases](https://github.com/EXL
 
 ## Run Tips
 
-Linux: Install the SDL{1,2}, SDL{1,2}_image, and SDL{1,2}_mixer libraries before starting the game.
+Linux, Ubuntu 22.04 LTS: Install the SDL{1,2}, SDL{1,2}_image, and SDL{1,2}_mixer libraries before starting the game.
 
 ```sh
 $ sudo apt install libsdl1.2debian libsdl-mixer1.2 libsdl-image1.2
