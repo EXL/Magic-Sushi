@@ -19,6 +19,10 @@ A port of simple puzzle game from MTK OS to SDL1, SDL2 and Emscripten.
 
 Ready-to-run game builds are available in the "[Releases](https://github.com/EXL/Magic-Sushi/releases)" section.
 
+## Demonstration
+
+YouTube: [Magic Sushi on Motorola ROKR E6, port from MTK OS](https://www.youtube.com/watch?v=NHHZTvMguP4).
+
 ## Run Tips
 
 Linux, Ubuntu 22.04 LTS: Install the SDL{1,2}, SDL{1,2}_image, and SDL{1,2}_mixer libraries before starting the game.
