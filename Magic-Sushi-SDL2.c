@@ -9,6 +9,8 @@
  *   MIT
  *
  * History:
+ *   19-Sep-2022: Fixed transparent texture bug.
+ *   18-Sep-2022: Implemented screen resizing on Phantom Horror request.
  *   17-Sep-2022: Implemented Game Over screen.
  *   16-Sep-2022: Implemented engine + shell concept.
  *   15-Sep-2022: Created initial draft/demo version.
@@ -489,7 +491,7 @@ int main(SDL_UNUSED int argc, SDL_UNUSED char *argv[]) {
 #ifndef __EMSCRIPTEN__
 	while (!exit_main_loop) {
 		main_loop_step(textures[TEXTURE_SCREEN]);
-		SDL_Delay(FPS_COUNTER); // ~10 FPS.
+		SDL_Delay(FPS_COUNTER); // 10 FPS.
 	}
 #else
 	CONTEXT_EMSCRIPTEN context;

@@ -9,6 +9,8 @@
  *   MIT
  *
  * History:
+ *   19-Sep-2022: Fixed transparent texture bug.
+ *   18-Sep-2022: Ported to Motorola EZX platform.
  *   17-Sep-2022: Implemented SDL1 version based on SDL2 version.
  *   15-Sep-2022: Created initial draft/demo version.
  *
@@ -472,7 +474,7 @@ int main(int argc, char *argv[]) {
 	while (!exit_main_loop) {
 		main_loop_step(main_screen);
 #ifndef _EZX
-		SDL_Delay(FPS_COUNTER); // ~10 FPS.
+		SDL_Delay(FPS_COUNTER); // 10 FPS.
 #endif
 	}
 #else
