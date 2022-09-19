@@ -8,8 +8,8 @@ A port of simple puzzle game from MTK OS to SDL1, SDL2 and Emscripten.
 ## Controls
 
 * Arrows and 4, 6, 8, 2 on Keypad – Move cursor.
-* Mouse click, Space, Return and 5 on Keypad – Select tile.
-* M and 7 on Keypad – Mute sound.
+* Mouse click, Touchscreen click, Space, Return and 5 on Keypad – Select tile.
+* M, Camera key (EZX) and 7 on Keypad – Mute sound.
 
 ## Web Demo
 
